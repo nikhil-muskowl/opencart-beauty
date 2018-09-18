@@ -87,6 +87,7 @@ div.required .control-label:before {
     padding: 4px 0px 3px 0;
     margin: 0 0 20px 0;
     min-height: 40px;
+    color: #fff;
 }
 #top .container {
     padding: 0 20px;
@@ -104,6 +105,8 @@ div.required .control-label:before {
     background-image: linear-gradient(to bottom, #D02E50, #D02E60);
     background-repeat: repeat-x;
 }
+
+
 #top .btn-link, #top-links li, #top-links a {
     color: #fff;	
     text-decoration: none;
@@ -130,7 +133,7 @@ div.required .control-label:before {
 }
 /* logo */
 #logo {
-    margin: 0 0 10px 0;
+    margin: 10px 0 0px 0;
 }
 /* search */
 #search {
@@ -498,7 +501,7 @@ footer h5 {
 }
 /* product list */
 .product-thumb {
-    border: 1px solid #ddd;
+    /*border: 1px solid #ddd;*/
     margin-bottom: 20px;
     overflow: auto;
 }
@@ -784,4 +787,26 @@ h2.price {
     -webkit-transform: translate3d(0,0,0);
     transform: translate3d(0,0,0);
     visibility: visible;
+}
+
+
+
+.home-html1{
+    margin:10px 0 10px 0;
+}
+.home-html2{
+    margin:10px 0 10px 0;
+}
+
+.home-html2 .image1{
+    float: left;
+}
+.home-html2 .image2{
+    float: left;
+}
+.home-html2 .image3{
+    float: left;
+}
+.home-html2 .image4{
+    float: left;
 }
