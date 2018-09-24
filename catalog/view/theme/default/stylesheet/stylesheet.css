@@ -33,10 +33,10 @@ h6 {
     font-size: 10.2px;
 }
 a {
-    color: #D02E50;
+    color: #d02e2e;
 }
 a:hover {
-    color: #D02E40;
+    color: #d02e2e;
     text-decoration: none;
 }
 
@@ -76,14 +76,14 @@ div.required .control-label:before {
 .dropdown-menu li > a:hover {
     text-decoration: none;
     color: #ffffff;
-    background-color: #D02E40;
-    background-image: linear-gradient(to bottom, #D02E50, #D02E60);
+    /*background-color: #d02e2e;*/
+    background-image: linear-gradient(to bottom, #d02e2e, #D02E60);
     background-repeat: repeat-x;
 }
 /* top */
 #top {
-    background-color: #D02E40;
-    border-bottom: 1px solid #D02E40;
+    background-color: #d02e2e;
+    border-bottom: 1px solid #d02e2e;
     padding: 4px 0px 3px 0;
     margin: 0 0 20px 0;
     min-height: 40px;
@@ -101,8 +101,8 @@ div.required .control-label:before {
 #top #form-language .language-select:hover {
     text-shadow: none;
     color: #ffffff;
-    background-color: #D02E40;
-    background-image: linear-gradient(to bottom, #D02E50, #D02E60);
+    background-color: #d02e2e;
+    background-image: linear-gradient(to bottom, #d02e2e, #D02E60);
     background-repeat: repeat-x;
 }
 
@@ -157,7 +157,7 @@ div.required .control-label:before {
 #cart > .btn {
     font-size: 12px;
     line-height: 18px;
-    color: #FFF;
+    /*color: #FFF;*/
 }
 #cart.open > .btn {
     background-image: none;
@@ -209,7 +209,8 @@ div.required .control-label:before {
     background-color: transparent;
 }
 #menu .nav > li > a:hover, #menu .nav > li.open > a {
-    color: #000;    
+    color: #000;  
+    background: transparent;
 }
 #menu .dropdown-menu {
     padding-bottom: 0;
@@ -244,8 +245,8 @@ div.required .control-label:before {
 #menu .see-all:hover, #menu .see-all:focus {
     text-decoration: none;
     color: #ffffff;
-    background-color: #D02E40;
-    background-image: linear-gradient(to bottom, #D02E50, #D02E60);
+    background-color: #d02e2e;
+    background-image: linear-gradient(to bottom, #d02e2e, #D02E60);
     background-repeat: repeat-x;
 }
 #menu #category {
@@ -262,8 +263,8 @@ div.required .control-label:before {
     color: #FFF;
     padding: 2px 18px;
     float: right;
-    background-color: #D02E40;
-    background-image: linear-gradient(to bottom, #D02E50, #D02E60);
+    background-color: #d02e2e;
+    background-image: linear-gradient(to bottom, #d02e2e, #D02E60);
     background-repeat: repeat-x;
     border-color: #D02E60 #D02E60 #D02E70;
 }
@@ -312,6 +313,7 @@ div.required .control-label:before {
 footer {
     margin-top: 30px;
     padding-top: 30px;
+    padding-bottom: 20px;
     background-color: #ededed;
     border-top: 1px solid #ededed;
     color: #333;
@@ -330,6 +332,19 @@ footer h5 {
     font-size: 18px;
     font-weight: bold;
     color: #333;
+}
+
+
+.footer{
+    background: #333;
+    color: #fff;
+    padding-top: 10px;    
+}
+.footer .links{
+    margin-top: 6px;
+}
+.footer .links a{
+    color: #fff;
 }
 /* alert */
 .alert {
@@ -372,6 +387,37 @@ footer h5 {
 .pagination {
     margin: 0;
 }
+
+.pagination > li > a, .pagination > li > span {
+
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #d02e2e;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+
+}
+
+.pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover {
+    z-index: 3;
+    color: #fff;
+    background-color: #d02e2e;
+    border-color: #ddd;
+
+}
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+
+    z-index: 2;
+    color: #fff;
+    cursor: default;
+    background-color: #d02e2e;
+    border-color: #d02e2e;
+
+}
 /* buttons */
 .buttons {
     margin: 1em 0;
@@ -380,7 +426,7 @@ footer h5 {
     padding: 7.5px 12px;
     font-size: 12px;
     border: 1px solid #cccccc;
-    border-radius: 4px;    
+    border-radius: 0px;    
 }
 .btn-xs {
     font-size: 9px;
@@ -411,7 +457,7 @@ footer h5 {
 }
 .btn-primary {
     color: #ffffff;    
-    background-color: #D02E40;        
+    background-color: #d02e2e;        
     border-color: #D02E60 #D02E60 #D02E70;
 }
 .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
@@ -454,7 +500,7 @@ footer h5 {
 .btn-link {
     border-color: rgba(0, 0, 0, 0);
     cursor: pointer;
-    color: #23A1D1;
+    color: #d02e2e;
     border-radius: 0;
 }
 .btn-link, .btn-link:active, .btn-link[disabled] {
@@ -482,7 +528,7 @@ footer h5 {
 }
 .list-group a.active, .list-group a.active:hover, .list-group a:hover {
     color: #444444;
-    background: #eeeeee;
+    /*background: #eeeeee;*/
     border: 1px solid #DDDDDD;
     text-shadow: 0 1px 0 #FFF;
 }
@@ -598,7 +644,7 @@ h2.price {
     border: none;
     display: inline-block;
     float: left;
-    background-color: #D02E40;
+    background-color: #d02e2e;
     color: #fff;
     line-height: 38px;
     font-weight: bold;
@@ -729,7 +775,7 @@ h2.price {
 }
 
 .heading::first-letter {     
-    color: #D02E40;
+    color: #d02e2e;
 }
 
 .heading:after {
@@ -740,7 +786,7 @@ h2.price {
     margin:10px auto;
     width:30%;
     height:2px;
-    background:#D02E40;
+    background:#d02e2e;
 }
 
 
@@ -790,23 +836,51 @@ h2.price {
 }
 
 
+.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
+    background-color: transparent !important;
+    border-color: #337ab7;
 
-.home-html1{
-    margin:10px 0 10px 0;
-}
-.home-html2{
-    margin:10px 0 10px 0;
 }
 
-.home-html2 .image1{
-    float: left;
+list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+
+    z-index: 2;
+    color: #fff;
+    background-color: #d02e2e;
+    border-color: #d02e2e;
+
 }
-.home-html2 .image2{
-    float: left;
+
+.list-group a.active, .list-group a.active:hover, .list-group a:hover {
+
+    color: #fff;
+    background: #d02e2e;    
+}
+
+.home-html1{    
+    margin: 10px 0 10px 0;
+}
+.home-html1 .image1{    
+}
+.home-html1 .image2{
+
+}
+
+
+
+.home-html2{     
+    margin: 30px 0 10px 0;
+}
+
+.home-html2 .image1{            
+}
+.home-html2 .image2{     
 }
 .home-html2 .image3{
-    float: left;
+    margin-top: 1%; 
+    margin-left: 4.5%;
 }
 .home-html2 .image4{
-    float: left;
+    margin-top: 1%;     
+    margin-left: -4.5%;
 }
