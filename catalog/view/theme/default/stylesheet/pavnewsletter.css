@@ -1,53 +1,17 @@
-/****/
-.white-popup {
-    position: relative;
-    background: #FFF;
-    padding: 20px;
-    width: auto;
-    max-width: 700px;
-    margin: 20px auto;
-}
-.white-popup  .mfp-close{
-    background:#FFF;
-}
 .newsletter-bg{
     background-repeat: no-repeat;
     background-size: cover;
 }
-.slide-bottom{
-    position: absolute;
-    padding:30px;
-    background:#FFF;
-    bottom: 0;
-    right: 10%;
-    border: solid 1px #000;
-}
-.slide-bottom .inner{
-    position: relative;
-}
-.button-slide{
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 30px;
-    height: 30px;
-    background:#000;
-    color: #FFF;
-    text-align: center;
-    line-height: 30px;
-}
-/****/
-
 
 .btn-newsletter {
     background-color: transparent;
     border-color: #fff;
     color: #fff;
-    width: 15rem;    
-    height: 45px
+    width: 10rem;    
+    height: 35px
 }
 .pav-newsletter form{
-    padding: 5rem 20rem 5rem 20rem;
+    padding: 5rem 1rem 5rem 1rem;
 }
 
 .pav-newsletter input.transparent-input{
@@ -55,11 +19,11 @@
     color: #fff;
     border-color: #fff; 
     border-radius: 0px;    
-    height: 45px
+    height: 35px
 }
 
 .pav-newsletter .title{
-    font-size: 5rem;
+    font-size: 2rem;
     color: #fff;
     text-transform: uppercase;
     text-align: center;
@@ -76,3 +40,119 @@
     color: #fff;
     margin-bottom: 4rem;
 }
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+    /* Styles */
+
+    .btn-newsletter {
+        background-color: transparent;
+        border-color: #fff;
+        color: #fff;
+        width: 5rem;    
+        height: 35px
+    }
+    .pav-newsletter form{
+        padding: 5rem 1rem 5rem 1rem;
+    }
+
+    .pav-newsletter input.transparent-input{
+        background-color:transparent !important;    
+        color: #fff;
+        border-color: #fff; 
+        border-radius: 0px;    
+        height: 35px
+    }
+
+    .pav-newsletter .title{
+        font-size: 2rem;
+        color: #fff;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+}
+
+/* Smartphones (landscape) ----------- */
+@media only screen 
+and (min-width : 321px) {
+    /* Styles */
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen 
+and (max-width : 320px) {
+    /* Styles */
+}
+
+/* Tablets, iPads (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+    /* Styles */
+}
+
+/* Tablets, iPads (landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : landscape) {
+    /* Styles */
+}
+
+/* Tablets, iPads (portrait) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : portrait) {
+    /* Styles */
+}
+
+/* Desktops and laptops ----------- */
+@media only screen 
+and (min-width : 1224px) {
+    /* Styles */
+    .btn-newsletter {
+        background-color: transparent;
+        border-color: #fff;
+        color: #fff;
+        width: 15rem;    
+        height: 45px
+    }
+    .pav-newsletter form{
+        padding: 5rem 20rem 5rem 20rem;
+    }
+
+    .pav-newsletter input.transparent-input{
+        background-color:transparent !important;    
+        color: #fff;
+        border-color: #fff; 
+        border-radius: 0px;    
+        height: 45px
+    }
+
+    .pav-newsletter .title{
+        font-size: 5rem;
+        color: #fff;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Large screens ----------- */
+@media only screen 
+and (min-width : 1824px) {
+    /* Styles */
+}
+
+/* iPhone 4 ----------- */
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+    /* Styles */
+}
+
