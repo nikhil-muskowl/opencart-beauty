@@ -1,46 +1,98 @@
 <?php
+
 class ControllerCommonMenu extends Controller {
-	public function index() {
-		$this->load->language('common/menu');
 
-		// Menu
-		$this->load->model('catalog/category');
+    public function index() {
+        $this->load->language('common/menu');
 
-		$this->load->model('catalog/product');
+        // Menu
+        $this->load->model('catalog/category');
 
-		$data['categories'] = array();
+        $this->load->model('catalog/product');
 
-		$categories = $this->model_catalog_category->getCategories(0);
+        $data['categories'] = array();
+        $results = $this->model_catalog_category->getCategoriesByShop($this->config->get('config_store_id'));
+        $this->load->model('tool/image');
 
-		foreach ($categories as $category) {
-			if ($category['top']) {
-				// Level 2
-				$children_data = array();
+        foreach ($results as $result) {
 
-				$children = $this->model_catalog_category->getCategories($category['category_id']);
+            $children_data = array();
+            $children = $this->model_catalog_category->getCategoriesChilds($result['category_id'], $this->config->get('config_store_id'));
 
-				foreach ($children as $child) {
-					$filter_data = array(
-						'filter_category_id'  => $child['category_id'],
-						'filter_sub_category' => true
-					);
+            foreach ($children as $child) {
+                $gchildren_data = array();
+                $gchildren = $this->model_catalog_category->getCategoriesChilds($child['category_id'], $this->config->get('config_store_id'));
 
-					$children_data[] = array(
-						'name'  => $child['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-						'href'  => $this->url->link('product/category', 'path=' . $category['category_id'] . '_' . $child['category_id'])
-					);
-				}
+                foreach ($gchildren as $gchild) {
+                    $gchildren_data[] = array(
+                        'category_id' => $gchild['category_id'],
+                        'name' => $gchild['name'],
+                        'href' => $this->url->link('product/category', 'path=' . $result['category_id'] . '_' . $child['category_id'] . '_' . $gchild['category_id'])
+                    );
+                }
 
-				// Level 1
-				$data['categories'][] = array(
-					'name'     => $category['name'],
-					'children' => $children_data,
-					'column'   => $category['column'] ? $category['column'] : 1,
-					'href'     => $this->url->link('product/category', 'path=' . $category['category_id'])
-				);
-			}
-		}
+                if ($child['image']) {
+                    $image = $this->model_tool_image->resize($child['image'], 80, 80);
+                } else {
+                    $image = false;
+                }
 
-		return $this->load->view('common/menu', $data);
-	}
+                $children_data[] = array(
+                    'category_id' => $child['category_id'],
+                    'name' => $child['name'],
+                    'gchildren' => $gchildren_data,
+                    'image' => $image,
+                    'href' => $this->url->link('product/category', 'path=' . $result['category_id'] . '_' . $child['category_id'])
+                );
+                                
+            }
+
+            if ($result['image']) {
+                $image = $this->model_tool_image->resize($result['image'], 80, 80);
+            } else {
+                $image = false;
+            }
+
+            $CatText = html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8');
+
+            $data['categories'][] = array(
+                'name' => $result['name'],
+                'category_id' => $result['category_id'],
+                'children' => $children_data,
+                'description' => $CatText,
+                'image' => $image,
+                'href' => $this->url->link('product/category', 'path=' . $result['category_id'])
+            );
+        }
+        
+//        print_r($data['categories']);
+//        exit;
+
+        $this->load->model('catalog/information');
+
+        $data['informations'] = array();
+
+        foreach ($this->model_catalog_information->getInformations() as $result) {
+            if ($result['bottom']) {
+                $data['informations'][] = array(
+                    'title' => $result['title'],
+                    'href' => $this->url->link('information/information', 'information_id=' . $result['information_id'])
+                );
+            }
+        }
+
+        $this->load->model('catalog/manufacturer');
+
+        $data['manufacturers'] = array();
+
+        foreach ($this->model_catalog_manufacturer->getManufacturers() as $result) {
+            $data['manufacturers'][] = array(
+                'name' => $result['name'],
+                'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $result['manufacturer_id'])
+            );
+        }
+
+        return $this->load->view('common/menu', $data);
+    }
+
 }

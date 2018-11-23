@@ -1,3 +1,4 @@
+html { overflow-x: hidden; }
 body {
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
@@ -6,8 +7,10 @@ body {
     line-height: 20px;
     width: 100%;
     height: 100%;    
-    margin: 0;
+    margin: 0 !important;
+    padding: 0 !important;
     overflow-x: hidden;
+
 }
 h1, h2, h3, h4, h5, h6 {
     color: #444;
@@ -142,9 +145,9 @@ div.required .control-label:before {
 @media only screen 
 and (min-device-width : 320px) 
 and (max-device-width : 480px) {
-#logo {
-    margin: 0px 0px 0px 0px;
-}    
+    #logo {
+        margin: 0px 0px 0px 0px;
+    }    
 }
 /* search */
 #search {
@@ -866,73 +869,18 @@ list-group-item.active, .list-group-item.active:focus, .list-group-item.active:h
     color: #fff;
     background: #d02e2e;    
 }
-.carousel-inner > .item > a > img, .carousel-inner > .item > img{
-    display: block;
-    max-width: 100%;
-    width: 100%;
-    height: auto;
 
-}
 
-.home-html1{    
-    margin: 10px 15px 10px 15px;
-}
-.home-html1 .image1{ 
-    display: block;    
-    width: 100%;
-    height: 360px;
-}
-.home-html1 .image2{
-    display: block;    
-    width: 100%;
-    height: 360px;
-}
-/* Smartphones (portrait and landscape) ----------- */
+
+/* Desktops and laptops ----------- */
 @media only screen 
-and (min-device-width : 320px) 
-and (max-device-width : 480px) {
-    .home-html1{    
-        margin: 10px 0px 10px 0px;
-    }
-    .home-html1 .image1{ 
-        display: block;    
-        width: 100%; 
-        max-width: 100%;
-    }
-    .home-html1 .image2{
-        display: block;    
-        width: 100%;        
-        max-width: 100%;
-    }
-
-}
-
-/* Tablets, iPads (portrait and landscape) ----------- */
-@media only screen 
-and (min-device-width : 768px) 
-and (max-device-width : 1024px) {
-   .home-html1{    
-        margin: 10px 0px 10px 0px;
-    }
-    .home-html1 .image1{ 
-        display: block;    
-        width: 100%; 
-        max-width: 100%;
-    }
-    .home-html1 .image2{
-        display: block;    
-        width: 100%;        
-        max-width: 100%;
-    }
-}
-
-@media screen and (min-width: 1025px) and (max-width: 1280px) {
+and (min-width : 1224px) {
     .home-html1{    
         margin: 10px 15px 10px 15px;
     }
     .home-html1 .image1{ 
         display: block;    
-        width: 100%;
+        width: 100%;        
         height: 360px;
     }
     .home-html1 .image2{
@@ -941,41 +889,12 @@ and (max-device-width : 1024px) {
         height: 360px;
     }
 
-}
-
-.home-html2{     
-    margin: 30px 15px 10px 15px;
-}
-.home-html2 .image1{            
-    display: block;    
-    width: 650px;
-    height: 405px;
-}
-.home-html2 .image2{     
-    display: block;    
-    width: 100%;
-    height: 200px;
-    margin-bottom: 5px;
-}
-.home-html2 .image3{
-    display: block;    
-    width: 310px;
-    height: 200px;    
-}
-.home-html2 .image4{
-    display: block;    
-    width: 310px;
-    height: 200px;    
-    margin-left: -10px; 
-}
-
-@media screen and (min-width: 1025px) and (max-width: 1280px) {
     .home-html2{     
         margin: 30px 15px 10px 15px;
     }
     .home-html2 .image1{            
         display: block;    
-        width: 620px;
+        width: 650px;
         height: 405px;
     }
     .home-html2 .image2{     
@@ -986,13 +905,59 @@ and (max-device-width : 1024px) {
     }
     .home-html2 .image3{
         display: block;    
-        width: 295px;
+        width: 310px;
         height: 200px;    
     }
     .home-html2 .image4{
         display: block;    
-        width: 293px;
-        height: 200px;            
+        width: 310px;
+        height: 200px;    
+        margin-left: -10px; 
+    }
+}
+
+
+/* Large screens ----------- */
+@media only screen 
+and (min-width : 1824px) {
+    .home-html1{    
+        margin: 10px 15px 10px 15px;
+    }
+    .home-html1 .image1{ 
+        display: block;    
+        width: 100%;
+        height: 460px;
+    }
+    .home-html1 .image2{
+        display: block;    
+        width: 100%;
+        height: 460px;
+    }
+
+    .home-html2{     
+        margin: 30px 15px 10px 15px;
+    }
+    .home-html2 .image1{            
+        display: block;    
+        width: 900px;
+        height: 550px;
+    }
+    .home-html2 .image2{     
+        display: block;    
+        width: 100%;
+        height: 280px;
+        margin-bottom: 20px;
+    }
+    .home-html2 .image3{
+        display: block;    
+        width: 435px;
+        height: 250px;    
+    }
+    .home-html2 .image4{
+        display: block;    
+        width: 435px;
+        height: 250px;    
+        margin-left: 0px; 
     }
 }
 
@@ -1000,6 +965,21 @@ and (max-device-width : 1024px) {
 @media only screen 
 and (min-device-width : 320px) 
 and (max-device-width : 480px) {
+
+    .home-html1{    
+        margin: 10px 0px 10px 0px;
+    }
+    .home-html1 .image1{ 
+        display: block;    
+        width: 100%; 
+        max-width: 100%;
+    }
+    .home-html1 .image2{
+        display: block;    
+        width: 100%;        
+        max-width: 100%;
+    }
+
     .home-html2{     
         margin: 30px 0px 10px 0px;
     }
@@ -1034,7 +1014,20 @@ and (max-device-width : 480px) {
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) {
-   .home-html2{     
+    .home-html1{    
+        margin: 10px 0px 10px 0px;
+    }
+    .home-html1 .image1{ 
+        display: block;    
+        width: 100%; 
+        max-width: 100%;
+    }
+    .home-html1 .image2{
+        display: block;    
+        width: 100%;        
+        max-width: 100%;
+    }
+    .home-html2{     
         margin: 30px 0px 10px 0px;
     }
     .home-html2 .image1{            
