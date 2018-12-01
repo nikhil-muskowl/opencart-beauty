@@ -1,33 +1,31 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ heading_title }}</h3>
+        <h3 class="panel-title">{{ heading_title }}</h3>        
     </div>
-    <div class="panel-body">
+    <div class="panel-body">      
         {% if categories %}
             {% for category in categories %}
 
-                <h4 data-toggle="collapse" data-target="#brand{{ category.name }}">{{ category.name }}</h4>
+                <h4>{{ category.name }}</h4>
 
-                <div id="brand{{ category.name }}" class="collapse in">
-                    {% if category.manufacturer %}
-                        {% for manufacturers in category.manufacturer|batch(4) %}                        
-                            {% for manufacturer in manufacturers %}
-                                <div class="checkbox">
-                                    {% if manufacturer.checked %}
-                                        <label><input name="brandFilter[]" checked type="checkbox" value="{{ manufacturer.manufacturer_id }}">{{ manufacturer.name }}</label>
-                                        {% else %}
-                                        <label><input name="brandFilter[]" type="checkbox" value="{{ manufacturer.manufacturer_id }}">{{ manufacturer.name }}</label>
-                                        {% endif %}
-                                </div>
-                            {% endfor %}                         
-                        {% endfor %}
-                    {% endif %}
-                </div> 
+                {% if category.manufacturer %}
+                    {% for manufacturers in category.manufacturer|batch(4) %}                        
+                        {% for manufacturer in manufacturers %}
+                            <div class="checkbox">
+                                {% if manufacturer.checked %}
+                                    <label><input name="brandFilter[]" checked type="checkbox" value="{{ manufacturer.manufacturer_id }}">{{ manufacturer.name }}</label>
+                                    {% else %}
+                                    <label><input name="brandFilter[]" type="checkbox" value="{{ manufacturer.manufacturer_id }}">{{ manufacturer.name }}</label>
+                                    {% endif %}
+                            </div>
+                        {% endfor %}                         
+                    {% endfor %}
+                {% endif %}
 
             {% endfor %}
 
             <button class="btn btn-block btn-default" id="brandFilterBtn">Filter</button>
-        {% endif %}
+        {% endif %}       
     </div>
 </div>
 
