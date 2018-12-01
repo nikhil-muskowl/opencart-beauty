@@ -113,6 +113,20 @@ class ControllerExtensionModulePriceSlider extends Controller {
             $data['price_code'] = $code;
 
             $url = '';
+            
+            if (isset($this->request->get['brand_filter'])) {
+                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
+            }
+
+            if (isset($this->request->get['filter'])) {
+                $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+                      
+            
             if (isset($this->request->get['sort'])) {
                 $url .= '&sort=' . $this->request->get['sort'];
             }
@@ -124,14 +138,10 @@ class ControllerExtensionModulePriceSlider extends Controller {
             if (isset($this->request->get['limit'])) {
                 $url .= '&limit=' . $this->request->get['limit'];
             }
-            if (isset($this->request->get['filter'])) {
-                $url .= '&filter=' . $this->request->get['filter'];
-            }
-            if (isset($this->request->get['manufacturer'])) {
-                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
-            }
+            
+            
 
-            $data['action'] = str_replace('&amp;', '&', $this->url->link('product/category', 'path=' . $this->request->get['path'] . $url));
+            $data['action'] = $this->url->link('product/category', 'path=' . $this->request->get['path'] .urldecode($url));
 
             if (!$min_max) {
                 $range = explode('-', '0-0');

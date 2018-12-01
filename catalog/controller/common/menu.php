@@ -91,6 +91,10 @@ class ControllerCommonMenu extends Controller {
                 'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $result['manufacturer_id'])
             );
         }
+        
+        $this->load->language('common/footer');
+        $data['special'] = $this->url->link('product/special');
+        $data['contact'] = $this->url->link('information/contact');
 
         return $this->load->view('common/menu', $data);
     }

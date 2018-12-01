@@ -12,49 +12,16 @@ class ControllerProductCategory extends Controller {
         $this->load->model('tool/image');
 
         $priceslide_status = $this->config->get('module_price_slider_status');
-
-        $price_Range = '';
-        if ($priceslide_status == "1") {
-            $min_max = '';
-            if (isset($this->request->get['pr'])) {
-                $pr = $this->request->get['pr'];
-                $price_min_max = explode(',', $pr);
-                $price_range_min = (int) $price_min_max[0];
-                $price_range_max = (int) $price_min_max[1];
-                $price_Range = '';
-            } else {
-                if (isset($this->request->get['path'])) {
-                    $parts = explode('_', (string) $this->request->get['path']);
-
-                    $category_id = (int) array_pop($parts);
-                } else {
-                    $category_id = 0;
-                }
-                $category_info = $this->model_catalog_category->getCategory($category_id);
-
-                if ($category_info) {
-                    $filter_data = array(
-                        'filter_category_id' => $category_id,
-                    );
-                    $results = $this->model_catalog_product->getMinMaxProduct($filter_data);
-
-                    foreach ($results as $result) {
-                        if (!$min_max) {
-                            $min_max = (int) $result;
-                        } else {
-                            $min_max .= '-' . (int) $result;
-                        }
-                    }
-                }
-                if ($min_max != 0) {
-                    $price_Range = str_replace('-', ',', $min_max);
-                    $price_min_max = explode('-', $min_max);
-                    $price_range_min = (int) $price_min_max[0];
-                    $price_range_max = (int) $price_min_max[1];
-                } else {
-                    $price_Range = '';
-                }
-            }
+      
+        if (isset($this->request->get['pr'])) {
+            $pr = $this->request->get['pr'];
+        } else {
+            $pr = '';
+        }
+        if (isset($this->request->get['brand_filter'])) {
+            $brand_filter = $this->request->get['brand_filter'];
+        } else {
+            $brand_filter = '';
         }
 
         if (isset($this->request->get['filter'])) {
@@ -87,21 +54,10 @@ class ControllerProductCategory extends Controller {
             $limit = $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit');
         }
 
-        if ($priceslide_status == "1") {
-            if (isset($this->request->get['pr'])) {
-                $pr = $this->request->get['pr'];
-                $priceSlider_range = explode(',', $pr);
-                $price_min = $this->currency->convert($priceSlider_range[0], $this->session->data['currency'], $this->config->get('config_currency'));
-                $price_max = $this->currency->convert($priceSlider_range[1], $this->session->data['currency'], $this->config->get('config_currency'));
-
-                if ($price_max != null) {
-                    $price_max = round($price_max);
-                    $price_max = $price_max + (10 - (substr($price_max, -1)));
-                }
-                $pr = $price_min . "," . $price_max;
-            } else {
-                $pr = $price_Range;
-            }
+       if (isset($this->request->get['pr'])) {
+            $pr = $this->request->get['pr'];
+        } else {
+            $pr = '';
         }
 
         $data['breadcrumbs'] = array();
@@ -114,6 +70,22 @@ class ControllerProductCategory extends Controller {
         if (isset($this->request->get['path'])) {
             $url = '';
 
+            if (isset($this->request->get['brand_filter'])) {
+                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
+            }
+
+            if (isset($this->request->get['filter'])) {
+                $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
+            }
+
             if (isset($this->request->get['sort'])) {
                 $url .= '&sort=' . $this->request->get['sort'];
             }
@@ -124,18 +96,6 @@ class ControllerProductCategory extends Controller {
 
             if (isset($this->request->get['limit'])) {
                 $url .= '&limit=' . $this->request->get['limit'];
-            }
-
-            if (isset($this->request->get['pr'])) {
-                $pr = $this->request->get['pr'];
-                $priceSlider_range = explode(',', $pr);
-                $price_min = $this->currency->convert($priceSlider_range[0], $this->session->data['currency'], $this->config->get('config_currency'));
-                $price_max = $this->currency->convert($priceSlider_range[1], $this->session->data['currency'], $this->config->get('config_currency'));
-
-
-                $pr = $price_min . "," . $price_max;
-            } else {
-                $pr = $price_Range;
             }
 
             $path = '';
@@ -192,10 +152,22 @@ class ControllerProductCategory extends Controller {
 
             $url = '';
 
+            if (isset($this->request->get['brand_filter'])) {
+                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
+            }
+
             if (isset($this->request->get['filter'])) {
                 $url .= '&filter=' . $this->request->get['filter'];
             }
 
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
+            }
+            
             if (isset($this->request->get['sort'])) {
                 $url .= '&sort=' . $this->request->get['sort'];
             }
@@ -243,6 +215,8 @@ class ControllerProductCategory extends Controller {
             $filter_data = array(
                 'filter_category_id' => $category_id,
                 'filter_filter' => $filter,
+                'price_filter' => $pr,
+                'brand_filter' => $brand_filter,
                 'sort' => $sort,
                 'order' => $order,
                 'start' => ($page - 1) * $limit,
@@ -307,8 +281,20 @@ class ControllerProductCategory extends Controller {
 
             $url = '';
 
+            if (isset($this->request->get['brand_filter'])) {
+                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
+            }
+
             if (isset($this->request->get['filter'])) {
                 $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
             }
 
             if (isset($this->request->get['limit'])) {
@@ -375,6 +361,22 @@ class ControllerProductCategory extends Controller {
 
             $url = '';
 
+            if (isset($this->request->get['brand_filter'])) {
+                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
+            }
+
+            if (isset($this->request->get['filter'])) {
+                $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
+            }
+            
             if (isset($this->request->get['filter'])) {
                 $url .= '&filter=' . $this->request->get['filter'];
             }
@@ -408,6 +410,22 @@ class ControllerProductCategory extends Controller {
             }
 
             $url = '';
+            
+            if (isset($this->request->get['brand_filter'])) {
+                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
+            }
+
+            if (isset($this->request->get['filter'])) {
+                $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
+            }
 
             if (isset($this->request->get['filter'])) {
                 $url .= '&filter=' . $this->request->get['filter'];

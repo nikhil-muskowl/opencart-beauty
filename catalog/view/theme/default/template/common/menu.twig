@@ -74,9 +74,7 @@
                             <li><a href="{{ category.href }}">{{ category.name }}</a></li>
                             {% endif %}
                         {% endfor %}
-
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
+                    
                     {% if manufacturers %}
                         <li class="dropdown mega-dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ text_manufacturer }}<span class="caret"></span></a>				
@@ -87,6 +85,11 @@
                             </ul>
                         </li>
                     {% endif %}
+
+                    <li><a href="{{ special }}">{{ text_special }}</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    
 
                     {% if informations %}
                         <li class="dropdown">
@@ -99,7 +102,7 @@
                         </li>
                     {% endif %}
 
-                    <li><a href="index.php?route=information/contact">{{ text_contact }}</a></li>
+                    <li><a href="{{ contact }}">{{ text_contact }}</a></li>
                 </ul>
             </div><!-- /.nav-collapse -->
         </nav>

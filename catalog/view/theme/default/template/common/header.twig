@@ -24,7 +24,7 @@
         <link href="//fonts.googleapis.com/css?family=Open+Sans:400,400i,300,700" rel="stylesheet" type="text/css" />
         <link href="catalog/view/theme/default/stylesheet/stylesheet.css" rel="stylesheet">
         <link href="catalog/view/theme/default/stylesheet/megamenu.css" rel="stylesheet">
-        
+
         {% for style in styles %}
             <link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />
         {% endfor %}
@@ -42,40 +42,44 @@
     <body>
         <nav id="top">
             <div class="container">
-                <div class="pull-left">
-                    <div class="btn-group">
-                        <a href="{{ contact }}">
-                            <button class="btn btn-link dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-phone"></i> <span class="hidden-xs hidden-sm hidden-md">{{ telephone }}</span>
-                            </button>
-                        </a>
+                <div class="row">
+                    <div id="top-links" class="nav pull-right">                    
+                        <ul class="list-inline">                        
+                            <li class="dropdown"><a href="{{ account }}" title="{{ text_account }}" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_account }}</span> <span class="caret"></span></a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    {% if logged %}
+                                        <li><a href="{{ account }}">{{ text_account }}</a></li>
+                                        <li><a href="{{ order }}">{{ text_order }}</a></li>
+                                        <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
+                                        <li><a href="{{ download }}">{{ text_download }}</a></li>
+                                        <li><a href="{{ logout }}">{{ text_logout }}</a></li>
+                                        {% else %}
+                                        <li><a href="{{ register }}">{{ text_register }}</a></li>
+                                        <li><a href="{{ login }}">{{ text_login }}</a></li>
+                                        {% endif %}
+                                </ul>
+                            </li>
+                            <li><a href="javascript:void(0)" title="{{ text_search }}" data-toggle="collapse" data-target="#search-bar"><i class="fa fa-search"></i></a></li>
+                            <li><a href="{{ wishlist }}" id="wishlist-total" title="{{ text_wishlist }}"><i class="fa fa-heart"></i></a></li>
+                            <li>{{ cart }}</li>
+                                {#<li><a href="{{ shopping_cart }}" title="{{ text_shopping_cart }}"><i class="fa fa-shopping-cart"></i></a></li>#}
+                                {#<li><a href="{{ checkout }}" title="{{ text_checkout }}"><i class="fa fa-share"></i></a></li>#}
+                        </ul>
                     </div>
-                </div>
 
-                {{ language }}
-                {{ currency }}
+                    <div class="pull-left">
+                        <div class="btn-group">
+                            <a href="{{ contact }}">
+                                <button class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-phone"></i> <span class="hidden-xs hidden-sm hidden-md">{{ telephone }}</span>
+                                </button>
+                            </a>
+                        </div>
+                    </div>                            
+                    {{ language }}
+                    {{ currency }}
 
-                <div id="top-links" class="nav pull-right">                    
-                    <ul class="list-inline">                        
-                        <li class="dropdown"><a href="{{ account }}" title="{{ text_account }}" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_account }}</span> <span class="caret"></span></a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                {% if logged %}
-                                    <li><a href="{{ account }}">{{ text_account }}</a></li>
-                                    <li><a href="{{ order }}">{{ text_order }}</a></li>
-                                    <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
-                                    <li><a href="{{ download }}">{{ text_download }}</a></li>
-                                    <li><a href="{{ logout }}">{{ text_logout }}</a></li>
-                                    {% else %}
-                                    <li><a href="{{ register }}">{{ text_register }}</a></li>
-                                    <li><a href="{{ login }}">{{ text_login }}</a></li>
-                                    {% endif %}
-                            </ul>
-                        </li>
-                        <li><a href="javascript:void(0)" title="{{ text_search }}" data-toggle="collapse" data-target="#search-bar"><i class="fa fa-search"></i></a></li>
-                        <li><a href="{{ wishlist }}" id="wishlist-total" title="{{ text_wishlist }}"><i class="fa fa-heart"></i></a></li>
-                        <li><a href="{{ shopping_cart }}" title="{{ text_shopping_cart }}"><i class="fa fa-shopping-cart"></i></a></li>
-                        <li><a href="{{ checkout }}" title="{{ text_checkout }}"><i class="fa fa-share"></i></a></li>
-                    </ul>
+
                 </div>
             </div>
 
@@ -90,14 +94,24 @@
 
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-3">
+                    <div class="pull-right">
+                        <div>
+                            <img src="image/catalog/website/Social-Media-Logos/Twitter.png" alt=""/>                                                
+                            <img src="image/catalog/website/Social-Media-Logos/Pintrest.png" alt=""/>                        
+                            <img src="image/catalog/website/Social-Media-Logos/Facebook.png" alt=""/>                                        
+                            <img src="image/catalog/website/Social-Media-Logos/G+.png" alt=""/>                        
+                            <img src="image/catalog/website/Social-Media-Logos/Instagram.png" alt=""/>                        
+                            <img src="image/catalog/website/Social-Media-Logos/Linkdin.png" alt=""/>
+                        </div>
+                    </div>
+                    <div class="pull-left">
                         <div id="logo">{% if logo %}<a href="{{ home }}"><img src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" /></a>{% else %}
                             <h1><a href="{{ home }}">{{ name }}</a></h1>
-                            {% endif %}</div>
-                        </div>
-                        <div class="col-sm-5"></div>
-                        <div class="col-sm-3">{{ cart }}</div>
-                    </div>
+                                {% endif %}
+                            </div>
+                        </div>                        
+                    </div>                        
+
                 </div>
             </header>
 

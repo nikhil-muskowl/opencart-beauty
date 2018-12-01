@@ -139,7 +139,7 @@ div.required .control-label:before {
 }
 /* logo */
 #logo {
-    margin: 10px 0 0px 0px;
+    margin: 10px 0 10px 0px;
 }
 
 @media only screen 
@@ -166,7 +166,7 @@ and (max-device-width : 480px) {
 }
 /* cart */
 #cart {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 #cart > .btn {
     font-size: 12px;
@@ -193,7 +193,7 @@ and (max-device-width : 480px) {
 }
 @media (max-width: 478px) {
     #cart .dropdown-menu {
-        width: 100%;
+        /*width: 100%;*/
     }
 }
 #cart .dropdown-menu table {
@@ -210,6 +210,11 @@ and (max-device-width : 480px) {
 }
 #cart .dropdown-menu li p {
     margin: 20px 0;
+}
+
+#cart .table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
+    border: 1px solid #ddd;
+    color: #333;
 }
 
 /* menu */
@@ -477,6 +482,10 @@ footer h5 {
 .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
     background-color: #d83636;
     background-position: 0 -15px;
+}
+.btn-primary-outline {
+  background-color: transparent;
+  border-color: #ccc;
 }
 .btn-warning {
     color: #ffffff;    
