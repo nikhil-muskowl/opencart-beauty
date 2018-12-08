@@ -1,70 +1,60 @@
 <?php
 
-class ControllerExtensionModuleBrandFilter extends Controller {
+class ControllerExtensionModuleCountryOriginFilter extends Controller {
 
     public function index() {
-        $this->load->language('extension/module/brand_filter');
+        $this->load->language('extension/module/country_origin_filter');
         $data['heading_title'] = $this->language->get('heading_title');
         $data['button_filter'] = $this->language->get('button_filter');
 
 
-        if (isset($this->request->get['brand_filter'])) {
-            $brand_filter = explode(',', (string) $this->request->get['brand_filter']);
+        if (isset($this->request->get['country_origin_filter'])) {
+            $country_origin_filter = explode(',', (string) $this->request->get['country_origin_filter']);
         } else {
-            $brand_filter = array();
+            $country_origin_filter = array();
         }
 
-        $this->load->language('product/manufacturer');
+        $this->load->language('product/country_origin');
 
-        $this->load->model('catalog/manufacturer');
+        $this->load->model('catalog/country_origin');
 
         $this->load->model('tool/image');
 
-        $data['categories'] = array();
+        $data['country_origins'] = array();
 
-        $results = $this->model_catalog_manufacturer->getManufacturers();
+        $results = $this->model_catalog_country_origin->getCountryOrigins();
 
         foreach ($results as $result) {
-            if (is_numeric(utf8_substr($result['name'], 0, 1))) {
-                $key = '0 - 9';
-            } else {
-                $key = utf8_substr(utf8_strtoupper($result['name']), 0, 1);
-            }
-
-            if (!isset($data['categories'][$key])) {
-                $data['categories'][$key]['name'] = $key;
-            }
 
             $checked = TRUE;
 
-            if (in_array($result['manufacturer_id'], $brand_filter)) {
+            if (in_array($result['country_origin_id'], $country_origin_filter)) {
                 $checked = TRUE;
             } else {
                 $checked = FALSE;
             }
 
-            $data['categories'][$key]['manufacturer'][] = array(
-                'manufacturer_id' => $result['manufacturer_id'],
+            $data['country_origins'][] = array(
+                'country_origin_id' => $result['country_origin_id'],
                 'checked' => $checked,
                 'name' => $result['name'],
-                'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $result['manufacturer_id'])
             );
         }
 
-
         if (isset($this->request->get['path'])) {
+
             $url = '';
 
             if (isset($this->request->get['filter'])) {
                 $url .= '&filter=' . $this->request->get['filter'];
             }
-            
+
             if (isset($this->request->get['manufacturer'])) {
                 $url .= '&manufacturer=' . $this->request->get['manufacturer'];
             }
-                        
-            if (isset($this->request->get['country_origin_filter'])) {
-                $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
+
+            if (isset($this->request->get['brand_filter'])) {
+                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
             }
 
             if (isset($this->request->get['pr'])) {
@@ -91,7 +81,7 @@ class ControllerExtensionModuleBrandFilter extends Controller {
                 $data['action'] = str_replace('&amp;', '&', $this->url->link('product/category', 'path=' . $this->request->get['path'] . $url));
             }
 
-            return $this->load->view('extension/module/brand_filter', $data);
+            return $this->load->view('extension/module/country_origin_filter', $data);
         }
     }
 

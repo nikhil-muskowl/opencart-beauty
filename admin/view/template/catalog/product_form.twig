@@ -383,6 +383,13 @@
                 </div>
               </div>
               <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-country_origin"><span data-toggle="tooltip" title="{{ help_country_origin }}">{{ entry_country_origin }}</span></label>
+                <div class="col-sm-10">
+                  <input type="text" name="country_origin" value="{{ country_origin }}" placeholder="{{ entry_country_origin }}" id="input-country_origin" class="form-control" />
+                  <input type="hidden" name="country_origin_id" value="{{ country_origin_id }}" />
+                </div>
+              </div>
+              <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="{{ help_category }}">{{ entry_category }}</span></label>
                 <div class="col-sm-10">
                   <input type="text" name="category" value="" placeholder="{{ entry_category }}" id="input-category" class="form-control" />
@@ -1168,6 +1175,32 @@ $('input[name=\'manufacturer\']').autocomplete({
 	'select': function(item) {
 		$('input[name=\'manufacturer\']').val(item['label']);
 		$('input[name=\'manufacturer_id\']').val(item['value']);
+	}
+});
+// Country Origin
+$('input[name=\'country_origin\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/country_origin/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				json.unshift({
+					country_origin_id: 0,
+					name: '{{ text_none }}'
+				});
+
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['country_origin_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'country_origin\']').val(item['label']);
+		$('input[name=\'country_origin_id\']').val(item['value']);
 	}
 });
 

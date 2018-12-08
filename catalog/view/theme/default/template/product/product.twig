@@ -125,6 +125,9 @@
             {% if manufacturer %}
             <li>{{ text_manufacturer }} <a href="{{ manufacturers }}">{{ manufacturer }}</a></li>
             {% endif %}
+            {% if country_origin %}
+            <li>{{ text_country_origin }} {{ country_origin }}</li>
+            {% endif %}
             <li>{{ text_model }} {{ model }}</li>
             {% if reward %}
             <li>{{ text_reward }} {{ reward }}</li>

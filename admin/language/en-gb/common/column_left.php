@@ -39,6 +39,7 @@ $_['text_maintenance'] = 'Maintenance';
 $_['text_menu'] = 'Menu Manager';
 $_['text_modification'] = 'Modifications';
 $_['text_manufacturer'] = 'Manufacturers';
+$_['text_country_origin'] = 'Country Origins';
 $_['text_navigation'] = 'Navigation';
 $_['text_option'] = 'Options';
 $_['text_order'] = 'Orders';

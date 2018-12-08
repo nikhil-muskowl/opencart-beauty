@@ -97,6 +97,14 @@ class ControllerCommonColumnLeft extends Controller {
                 );
             }
 
+            if ($this->user->hasPermission('access', 'catalog/country_origin')) {
+                $catalog[] = array(
+                    'name' => $this->language->get('text_country_origin'),
+                    'href' => $this->url->link('catalog/country_origin', 'user_token=' . $this->session->data['user_token'], true),
+                    'children' => array()
+                );
+            }
+            
             if ($this->user->hasPermission('access', 'catalog/manufacturer')) {
                 $catalog[] = array(
                     'name' => $this->language->get('text_manufacturer'),

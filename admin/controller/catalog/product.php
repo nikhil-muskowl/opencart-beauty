@@ -865,6 +865,30 @@ class ControllerCatalogProduct extends Controller {
             $data['manufacturer'] = '';
         }
 
+        $this->load->model('catalog/country_origin');
+
+        if (isset($this->request->post['country_origin_id'])) {
+            $data['country_origin_id'] = $this->request->post['country_origin_id'];
+        } elseif (!empty($product_info)) {
+            $data['country_origin_id'] = $product_info['country_origin_id'];
+        } else {
+            $data['country_origin_id'] = 0;
+        }
+
+        if (isset($this->request->post['country_origin'])) {
+            $data['country_origin'] = $this->request->post['country_origin'];
+        } elseif (!empty($product_info)) {
+            $country_origin_info = $this->model_catalog_country_origin->getCountryOrigin($product_info['country_origin_id']);
+
+            if ($country_origin_info) {
+                $data['country_origin'] = $country_origin_info['name'];
+            } else {
+                $data['country_origin'] = '';
+            }
+        } else {
+            $data['country_origin'] = '';
+        }
+
         // Categories
         $this->load->model('catalog/category');
 
