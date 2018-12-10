@@ -14,6 +14,12 @@ class ControllerExtensionModuleCountryOriginFilter extends Controller {
             $country_origin_filter = array();
         }
 
+        if (isset($this->request->get['manufacturer_id'])) {
+            $manufacturer_id = (int) $this->request->get['manufacturer_id'];
+        } else {
+            $manufacturer_id = 0;
+        }
+
         $this->load->language('product/country_origin');
 
         $this->load->model('catalog/country_origin');
@@ -42,47 +48,53 @@ class ControllerExtensionModuleCountryOriginFilter extends Controller {
         }
 
         if (isset($this->request->get['path'])) {
-
-            $url = '';
-
-            if (isset($this->request->get['filter'])) {
-                $url .= '&filter=' . $this->request->get['filter'];
-            }
-
-            if (isset($this->request->get['manufacturer'])) {
-                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
-            }
-
-            if (isset($this->request->get['brand_filter'])) {
-                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
-            }
-
-            if (isset($this->request->get['pr'])) {
-                $url .= '&pr=' . $this->request->get['pr'];
-            }
-
-            if (isset($this->request->get['sort'])) {
-                $url .= '&sort=' . $this->request->get['sort'];
-            }
-
-            if (isset($this->request->get['order'])) {
-                $url .= '&order=' . $this->request->get['order'];
-            }
-
-            if (isset($this->request->get['limit'])) {
-                $url .= '&limit=' . $this->request->get['limit'];
-            }
-
-            $action = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-
-            if (isset($action[0])) {
-                $data['action'] = str_replace('&amp;', '&', $this->url->link($action[0], 'path=' . $this->request->get['path'] . $url));
-            } else {
-                $data['action'] = str_replace('&amp;', '&', $this->url->link('product/category', 'path=' . $this->request->get['path'] . $url));
-            }
-
-            return $this->load->view('extension/module/country_origin_filter', $data);
+            $path = $this->request->get['path'];
+        } else {
+            $path = '';
         }
+        if (isset($this->request->get['route'])) {
+            $route = $this->request->get['route'];
+        } else {
+            $route = '';
+        }
+
+        $url = '';
+
+        if (isset($this->request->get['filter'])) {
+            $url .= '&filter=' . $this->request->get['filter'];
+        }
+
+        if (isset($this->request->get['manufacturer'])) {
+            $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+        }
+
+        if (isset($this->request->get['brand_filter'])) {
+            $url .= '&brand_filter=' . $this->request->get['brand_filter'];
+        }
+
+        if (isset($this->request->get['pr'])) {
+            $url .= '&pr=' . $this->request->get['pr'];
+        }
+
+        if (isset($this->request->get['sort'])) {
+            $url .= '&sort=' . $this->request->get['sort'];
+        }
+
+        if (isset($this->request->get['order'])) {
+            $url .= '&order=' . $this->request->get['order'];
+        }
+
+        if (isset($this->request->get['limit'])) {
+            $url .= '&limit=' . $this->request->get['limit'];
+        }
+
+        if (isset($route)) {
+            $data['action'] = str_replace('&amp;', '&', $this->url->link($route, 'path=' . $path . '&manufacturer_id=' . $manufacturer_id . $url));
+        } else {
+            $data['action'] = str_replace('&amp;', '&', $this->url->link('product/category', 'path=' . $path . '&manufacturer_id=' . $manufacturer_id . $url));
+        }
+
+        return $this->load->view('extension/module/country_origin_filter', $data);
     }
 
 }

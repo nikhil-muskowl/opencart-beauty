@@ -1,0 +1,30 @@
+<link href="catalog/view/javascript/bootstrap-toggle/css/bootstrap-toggle.min.css" rel="stylesheet" type="text/css"/>
+<script src="catalog/view/javascript/bootstrap-toggle/js/bootstrap-toggle.min.js" type="text/javascript"></script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ heading_title }}</h3>        
+    </div>
+    <div class="panel-body">      
+
+        {% if bestseller_filter %}
+            <label><input type="checkbox" id="bestseller_filter" checked data-toggle="toggle"></label>
+            {% else %}      
+            <label><input type="checkbox" id="bestseller_filter" data-toggle="toggle"></label>
+            {% endif %} 
+
+    </div>
+</div>
+
+<script>
+    $('#bestseller_filter').bootstrapToggle();
+    $('#bestseller_filter').change(function () {
+        if ($(this).is(':checked')) {
+            bestseller_filter = "&bestseller_filter=" + 1;
+        } else {
+            bestseller_filter = "";
+        }
+
+        location = "{{ action }}" + bestseller_filter;
+    });
+</script>

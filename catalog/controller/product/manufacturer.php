@@ -71,6 +71,24 @@ class ControllerProductManufacturer extends Controller {
             $manufacturer_id = 0;
         }
 
+        if (isset($this->request->get['pr'])) {
+            $pr = $this->request->get['pr'];
+        } else {
+            $pr = '';
+        }
+
+        if (isset($this->request->get['country_origin_filter'])) {
+            $country_origin_filter = $this->request->get['country_origin_filter'];
+        } else {
+            $country_origin_filter = '';
+        }
+
+        if (isset($this->request->get['filter'])) {
+            $filter = $this->request->get['filter'];
+        } else {
+            $filter = '';
+        }
+
         if (isset($this->request->get['sort'])) {
             $sort = $this->request->get['sort'];
         } else {
@@ -114,6 +132,22 @@ class ControllerProductManufacturer extends Controller {
 
             $url = '';
 
+            if (isset($this->request->get['country_origin_filter'])) {
+                $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
+            }
+
+            if (isset($this->request->get['filter'])) {
+                $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
+            }
+
             if (isset($this->request->get['sort'])) {
                 $url .= '&sort=' . $this->request->get['sort'];
             }
@@ -145,6 +179,9 @@ class ControllerProductManufacturer extends Controller {
 
             $filter_data = array(
                 'filter_manufacturer_id' => $manufacturer_id,
+                'filter_filter' => $filter,
+                'price_filter' => $pr,
+                'country_origin_filter' => $country_origin_filter,
                 'sort' => $sort,
                 'order' => $order,
                 'start' => ($page - 1) * $limit,
@@ -202,6 +239,22 @@ class ControllerProductManufacturer extends Controller {
 
             $url = '';
 
+            if (isset($this->request->get['country_origin_filter'])) {
+                $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
+            }
+
+            if (isset($this->request->get['filter'])) {
+                $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
+            }
+
             if (isset($this->request->get['limit'])) {
                 $url .= '&limit=' . $this->request->get['limit'];
             }
@@ -212,6 +265,30 @@ class ControllerProductManufacturer extends Controller {
                 'text' => $this->language->get('text_default'),
                 'value' => 'p.sort_order-ASC',
                 'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . '&sort=p.sort_order&order=ASC' . $url)
+            );
+
+            $data['sorts'][] = array(
+                'text' => $this->language->get('text_latest_asc'),
+                'value' => 'p.date_added-ASC',
+                'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . '&sort=p.date_added&order=ASC' . $url)
+            );
+
+            $data['sorts'][] = array(
+                'text' => $this->language->get('text_latest_desc'),
+                'value' => 'p.date_added-DESC',
+                'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . '&sort=p.date_added&order=DESC' . $url)
+            );
+
+            $data['sorts'][] = array(
+                'text' => $this->language->get('text_popular_asc'),
+                'value' => 'p.viewed-ASC',
+                'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . '&sort=p.viewed&order=ASC' . $url)
+            );
+
+            $data['sorts'][] = array(
+                'text' => $this->language->get('text_popular_desc'),
+                'value' => 'p.viewed-DESC',
+                'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . '&sort=p.viewed&order=DESC' . $url)
             );
 
             $data['sorts'][] = array(
@@ -266,6 +343,22 @@ class ControllerProductManufacturer extends Controller {
 
             $url = '';
 
+            if (isset($this->request->get['country_origin_filter'])) {
+                $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
+            }
+
+            if (isset($this->request->get['filter'])) {
+                $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
+            }
+
             if (isset($this->request->get['sort'])) {
                 $url .= '&sort=' . $this->request->get['sort'];
             }
@@ -289,6 +382,22 @@ class ControllerProductManufacturer extends Controller {
             }
 
             $url = '';
+
+            if (isset($this->request->get['country_origin_filter'])) {
+                $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
+            }
+
+            if (isset($this->request->get['filter'])) {
+                $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
+            }
 
             if (isset($this->request->get['sort'])) {
                 $url .= '&sort=' . $this->request->get['sort'];
@@ -346,6 +455,22 @@ class ControllerProductManufacturer extends Controller {
 
             if (isset($this->request->get['manufacturer_id'])) {
                 $url .= '&manufacturer_id=' . $this->request->get['manufacturer_id'];
+            }
+
+            if (isset($this->request->get['country_origin_filter'])) {
+                $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
+            }
+
+            if (isset($this->request->get['filter'])) {
+                $url .= '&filter=' . $this->request->get['filter'];
+            }
+
+            if (isset($this->request->get['manufacturer'])) {
+                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+            }
+
+            if (isset($this->request->get['pr'])) {
+                $url .= '&pr=' . $this->request->get['pr'];
             }
 
             if (isset($this->request->get['sort'])) {

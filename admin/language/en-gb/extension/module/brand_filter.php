@@ -8,7 +8,7 @@ $_['text_extension'] = 'Extensions';
 $_['text_edit'] = 'Edit Brand Filter Module';
 $_['text_success'] = 'Success: You have modified Brand Filter module!';
 $_['text_setting'] = 'Brand Filter Setting';
-$_['text_Price'] = 'Brand Filter';
+$_['text_price'] = 'Price Filter';
 
 // Entry 
 

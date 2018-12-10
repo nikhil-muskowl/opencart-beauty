@@ -263,14 +263,34 @@ class ModelCatalogProduct extends Model {
     }
 
     public function getProductSpecials($data = array()) {
-        $sql = "SELECT DISTINCT ps.product_id, (SELECT AVG(rating) FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = ps.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating FROM " . DB_PREFIX . "product_special ps LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int) $this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int) $this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) GROUP BY ps.product_id";
+        $sql = "SELECT DISTINCT ps.product_id, (SELECT AVG(rating) FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = ps.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating FROM " . DB_PREFIX . "product_special ps LEFT JOIN " . DB_PREFIX . "product p ON (ps.product_id = p.product_id) LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int) $this->config->get('config_store_id') . "' AND ps.customer_group_id = '" . (int) $this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW()))";
+  
+        if (!empty($data['country_origin_filter'])) {
+            $sql .= " AND p.country_origin_id IN ('" . (string) $data['country_origin_filter'] . "')";
+        }
+        
+        if (!empty($data['brand_filter'])) {
+            $sql .= " AND p.manufacturer_id IN ('" . (string) $data['brand_filter'] . "')";
+        }
+
+        if (!empty($data['price_filter'])) {
+            $price = explode(',', $data['price_filter']);
+            if (is_array($price) && isset($price[0]) && isset($price[1])) {
+                $sql .= " AND ps.price BETWEEN $price[0] AND $price[1]";
+            }
+        }
+
+        $sql .= " GROUP BY ps.product_id";
 
         $sort_data = array(
             'pd.name',
             'p.model',
-            'ps.price',
+            'p.quantity',
+            'p.price',
             'rating',
-            'p.sort_order'
+            'p.sort_order',
+            'p.date_added',
+            'p.viewed'
         );
 
         if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {

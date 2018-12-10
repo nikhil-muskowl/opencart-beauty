@@ -61,11 +61,6 @@ class ControllerProductCategory extends Controller {
             $limit = $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit');
         }
 
-        if (isset($this->request->get['pr'])) {
-            $pr = $this->request->get['pr'];
-        } else {
-            $pr = '';
-        }
 
         $data['breadcrumbs'] = array();
 
@@ -180,7 +175,7 @@ class ControllerProductCategory extends Controller {
             if (isset($this->request->get['pr'])) {
                 $url .= '&pr=' . $this->request->get['pr'];
             }
-         
+
             if (isset($this->request->get['limit'])) {
                 $url .= '&limit=' . $this->request->get['limit'];
             }
@@ -299,7 +294,7 @@ class ControllerProductCategory extends Controller {
             if (isset($this->request->get['pr'])) {
                 $url .= '&pr=' . $this->request->get['pr'];
             }
-           
+
 
             if (isset($this->request->get['limit'])) {
                 $url .= '&limit=' . $this->request->get['limit'];
@@ -307,14 +302,13 @@ class ControllerProductCategory extends Controller {
 
             $data['sorts'] = array();
 
-            
+
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_default'),
                 'value' => 'p.sort_order-ASC',
                 'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.sort_order&order=ASC' . $url)
             );
-            
-           
+
 
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_latest_asc'),
@@ -327,7 +321,7 @@ class ControllerProductCategory extends Controller {
                 'value' => 'p.date_added-DESC',
                 'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.date_added&order=DESC' . $url)
             );
-            
+
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_popular_asc'),
                 'value' => 'p.viewed-ASC',
@@ -390,7 +384,7 @@ class ControllerProductCategory extends Controller {
                 'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.model&order=DESC' . $url)
             );
 
-            
+
             $url = '';
 
             if (isset($this->request->get['country_origin_filter'])) {
