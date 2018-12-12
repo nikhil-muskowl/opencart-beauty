@@ -16,13 +16,13 @@
 
             {% endfor %}
 
-            <button class="btn btn-block btn-default" id="country_originFilterBtn">Filter</button>
+            <button class="btn btn-block btn-default" id="countryOriginFilterBtn">Filter</button>
         {% endif %}       
     </div>
 </div>
 
 <script>
-    $('#country_originFilterBtn').click(function () {
+    $('#countryOriginFilterBtn').click(function () {
         var fav = [];
         $.each($("input[name='country_originFilter[]']:checked"), function () {
             fav.push($(this).val());

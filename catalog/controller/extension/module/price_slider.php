@@ -156,13 +156,7 @@ class ControllerExtensionModulePriceSlider extends Controller {
 
         if (isset($this->request->get['limit'])) {
             $url .= '&limit=' . $this->request->get['limit'];
-        }
-
-        if (isset($route)) {
-            $data['action'] = str_replace('&amp;', '&', $this->url->link($route, 'path=' . $path . '&manufacturer_id=' . $manufacturer_id . $url));
-        } else {
-            $data['action'] = str_replace('&amp;', '&', $this->url->link('product/category', 'path=' . $path . '&manufacturer_id=' . $manufacturer_id . $url));
-        }
+        }        
 
         if (!$min_max) {
             $range = explode('-', '0-0');
@@ -175,6 +169,22 @@ class ControllerExtensionModulePriceSlider extends Controller {
 
         $data['price_min'] = $this->currency->format($range[0], $pcode);
         $data['price_max'] = $this->currency->format($range[1], $pcode);
+        
+        $action = '';
+        $actionUrl = '';
+
+        if (isset($route)) {
+            if (isset($path) && $path) {
+                $actionUrl .= 'path=' . $path;
+            }
+            if (isset($manufacturer_id) && $manufacturer_id) {
+                $actionUrl .= '&manufacturer_id=' . $manufacturer_id;
+            }
+            $action .= str_replace('&amp;', '&', $this->url->link($route, $actionUrl . $url));
+        }
+
+
+        $data['action'] = $action;
 
         return $this->load->view('extension/module/price_slider', $data);
     }

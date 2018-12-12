@@ -88,11 +88,21 @@ class ControllerExtensionModuleCountryOriginFilter extends Controller {
             $url .= '&limit=' . $this->request->get['limit'];
         }
 
+        $action = '';
+        $actionUrl = '';
+
         if (isset($route)) {
-            $data['action'] = str_replace('&amp;', '&', $this->url->link($route, 'path=' . $path . '&manufacturer_id=' . $manufacturer_id . $url));
-        } else {
-            $data['action'] = str_replace('&amp;', '&', $this->url->link('product/category', 'path=' . $path . '&manufacturer_id=' . $manufacturer_id . $url));
+            if (isset($path) && $path) {
+                $actionUrl .= 'path=' . $path;
+            }
+            if (isset($manufacturer_id) && $manufacturer_id) {
+                $actionUrl .= '&manufacturer_id=' . $manufacturer_id;
+            }
+            $action .= str_replace('&amp;', '&', $this->url->link($route, $actionUrl . $url));
         }
+
+
+        $data['action'] = $action;
 
         return $this->load->view('extension/module/country_origin_filter', $data);
     }

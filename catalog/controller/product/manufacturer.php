@@ -82,6 +82,11 @@ class ControllerProductManufacturer extends Controller {
         } else {
             $country_origin_filter = '';
         }
+        if (isset($this->request->get['category_filter'])) {
+            $category_filter = $this->request->get['category_filter'];
+        } else {
+            $category_filter = '';
+        }
 
         if (isset($this->request->get['filter'])) {
             $filter = $this->request->get['filter'];
@@ -135,6 +140,9 @@ class ControllerProductManufacturer extends Controller {
             if (isset($this->request->get['country_origin_filter'])) {
                 $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
             }
+            if (isset($this->request->get['category_filter'])) {
+                $url .= '&category_filter=' . $this->request->get['category_filter'];
+            }
 
             if (isset($this->request->get['filter'])) {
                 $url .= '&filter=' . $this->request->get['filter'];
@@ -182,6 +190,7 @@ class ControllerProductManufacturer extends Controller {
                 'filter_filter' => $filter,
                 'price_filter' => $pr,
                 'country_origin_filter' => $country_origin_filter,
+                'category_filter' => $category_filter,
                 'sort' => $sort,
                 'order' => $order,
                 'start' => ($page - 1) * $limit,
@@ -243,6 +252,10 @@ class ControllerProductManufacturer extends Controller {
                 $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
             }
 
+            if (isset($this->request->get['category_filter'])) {
+                $url .= '&category_filter=' . $this->request->get['category_filter'];
+            }
+
             if (isset($this->request->get['filter'])) {
                 $url .= '&filter=' . $this->request->get['filter'];
             }
@@ -265,6 +278,18 @@ class ControllerProductManufacturer extends Controller {
                 'text' => $this->language->get('text_default'),
                 'value' => 'p.sort_order-ASC',
                 'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . '&sort=p.sort_order&order=ASC' . $url)
+            );
+
+            $data['sorts'][] = array(
+                'text' => $this->language->get('text_bestseller_asc'),
+                'value' => 'order_total-ASC',
+                'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . '&sort=order_total&order=ASC' . $url)
+            );
+
+            $data['sorts'][] = array(
+                'text' => $this->language->get('text_bestseller_desc'),
+                'value' => 'order_total-DESC',
+                'href' => $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $this->request->get['manufacturer_id'] . '&sort=order_total&order=DESC' . $url)
             );
 
             $data['sorts'][] = array(
@@ -347,6 +372,10 @@ class ControllerProductManufacturer extends Controller {
                 $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
             }
 
+            if (isset($this->request->get['category_filter'])) {
+                $url .= '&category_filter=' . $this->request->get['category_filter'];
+            }
+
             if (isset($this->request->get['filter'])) {
                 $url .= '&filter=' . $this->request->get['filter'];
             }
@@ -385,6 +414,10 @@ class ControllerProductManufacturer extends Controller {
 
             if (isset($this->request->get['country_origin_filter'])) {
                 $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
+            }
+
+            if (isset($this->request->get['category_filter'])) {
+                $url .= '&category_filter=' . $this->request->get['category_filter'];
             }
 
             if (isset($this->request->get['filter'])) {
@@ -459,6 +492,10 @@ class ControllerProductManufacturer extends Controller {
 
             if (isset($this->request->get['country_origin_filter'])) {
                 $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
+            }
+            
+             if (isset($this->request->get['category_filter'])) {
+                $url .= '&category_filter=' . $this->request->get['category_filter'];
             }
 
             if (isset($this->request->get['filter'])) {

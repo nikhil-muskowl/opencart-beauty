@@ -8,7 +8,12 @@ class ControllerProductSpecial extends Controller {
         $this->load->model('catalog/product');
 
         $this->load->model('tool/image');
-       
+
+        if (isset($this->request->get['category_filter'])) {
+            $category_filter = $this->request->get['category_filter'];
+        } else {
+            $category_filter = 0;
+        }
         if (isset($this->request->get['pr'])) {
             $pr = $this->request->get['pr'];
         } else {
@@ -69,6 +74,9 @@ class ControllerProductSpecial extends Controller {
 
         $url = '';
 
+        if (isset($this->request->get['category_filter'])) {
+            $url .= '&category_filter=' . $this->request->get['category_filter'];
+        }
         if (isset($this->request->get['country_origin_filter'])) {
             $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
         }
@@ -121,13 +129,14 @@ class ControllerProductSpecial extends Controller {
             'price_filter' => $pr,
             'brand_filter' => $brand_filter,
             'country_origin_filter' => $country_origin_filter,
+            'category_filter' => $category_filter,
             'sort' => $sort,
             'order' => $order,
             'start' => ($page - 1) * $limit,
             'limit' => $limit
         );
 
-        $product_total = $this->model_catalog_product->getTotalProductSpecials();
+        $product_total = $this->model_catalog_product->getTotalProductSpecials($filter_data);
 
         $results = $this->model_catalog_product->getProductSpecials($filter_data);
 
@@ -178,6 +187,9 @@ class ControllerProductSpecial extends Controller {
 
         $url = '';
 
+        if (isset($this->request->get['category_filter'])) {
+            $url .= '&category_filter=' . $this->request->get['category_filter'];
+        }
         if (isset($this->request->get['country_origin_filter'])) {
             $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
         }
@@ -208,6 +220,18 @@ class ControllerProductSpecial extends Controller {
             'text' => $this->language->get('text_default'),
             'value' => 'p.sort_order-ASC',
             'href' => $this->url->link('product/special', 'sort=p.sort_order&order=ASC' . $url)
+        );
+
+        $data['sorts'][] = array(
+            'text' => $this->language->get('text_bestseller_asc'),
+            'value' => 'order_total-ASC',
+            'href' => $this->url->link('product/special', '&sort=order_total&order=ASC' . $url)
+        );
+
+        $data['sorts'][] = array(
+            'text' => $this->language->get('text_bestseller_desc'),
+            'value' => 'order_total-DESC',
+            'href' => $this->url->link('product/special', '&sort=order_total&order=DESC' . $url)
         );
 
         $data['sorts'][] = array(
@@ -310,6 +334,9 @@ class ControllerProductSpecial extends Controller {
 
         $url = '';
 
+        if (isset($this->request->get['category_filter'])) {
+            $url .= '&category_filter=' . $this->request->get['category_filter'];
+        }
         if (isset($this->request->get['country_origin_filter'])) {
             $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
         }
