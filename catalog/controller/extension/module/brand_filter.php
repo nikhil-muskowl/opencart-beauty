@@ -77,16 +77,24 @@ class ControllerExtensionModuleBrandFilter extends Controller {
             $url .= '&filter=' . $this->request->get['filter'];
         }
 
-        if (isset($this->request->get['manufacturer'])) {
-            $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+        if (isset($this->request->get['search'])) {
+            $url .= '&search=' . $this->request->get['search'];
+        }
+
+        if (isset($this->request->get['pr'])) {
+            $url .= '&pr=' . $this->request->get['pr'];
         }
 
         if (isset($this->request->get['country_origin_filter'])) {
             $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
         }
 
-        if (isset($this->request->get['pr'])) {
-            $url .= '&pr=' . $this->request->get['pr'];
+        if (isset($this->request->get['category_filter'])) {
+            $url .= '&category_filter=' . $this->request->get['category_filter'];
+        }
+
+        if (isset($this->request->get['manufacturer'])) {
+            $url .= '&manufacturer=' . $this->request->get['manufacturer'];
         }
 
         if (isset($this->request->get['sort'])) {

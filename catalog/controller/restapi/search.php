@@ -1,6 +1,6 @@
 <?php
 
-class ControllerProductSearch extends Controller {
+class ControllerRestApiSearch extends Controller {
 
     public function index() {
         $this->load->language('product/search');
@@ -16,6 +16,7 @@ class ControllerProductSearch extends Controller {
         } else {
             $category_filter = 0;
         }
+
         if (isset($this->request->get['pr'])) {
             $pr = $this->request->get['pr'];
         } else {
@@ -104,18 +105,13 @@ class ControllerProductSearch extends Controller {
             $this->document->setTitle($this->language->get('heading_title'));
         }
 
-        $data['breadcrumbs'] = array();
-
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/home')
-        );
 
         $url = '';
 
         if (isset($this->request->get['category_filter'])) {
             $url .= '&category_filter=' . $this->request->get['category_filter'];
         }
+
         if (isset($this->request->get['country_origin_filter'])) {
             $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
         }
@@ -172,10 +168,6 @@ class ControllerProductSearch extends Controller {
             $url .= '&limit=' . $this->request->get['limit'];
         }
 
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('product/search', $url)
-        );
 
         if (isset($this->request->get['search'])) {
             $data['heading_title'] = $this->language->get('heading_title') . ' - ' . $this->request->get['search'];
@@ -183,9 +175,6 @@ class ControllerProductSearch extends Controller {
             $data['heading_title'] = $this->language->get('heading_title');
         }
 
-        $data['text_compare'] = sprintf($this->language->get('text_compare'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));
-
-        $data['compare'] = $this->url->link('product/compare');
 
         $this->load->model('catalog/category');
 
@@ -289,7 +278,7 @@ class ControllerProductSearch extends Controller {
                     'tax' => $tax,
                     'minimum' => $result['minimum'] > 0 ? $result['minimum'] : 1,
                     'rating' => $result['rating'],
-                    'href' => $this->url->link('product/product', 'product_id=' . $result['product_id'] . $url)
+                    'href' => $this->url->api_link('product/product', 'product_id=' . $result['product_id'] . $url)
                 );
             }
 
@@ -348,57 +337,57 @@ class ControllerProductSearch extends Controller {
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_default'),
                 'value' => 'p.sort_order-ASC',
-                'href' => $this->url->link('product/search', 'sort=p.sort_order&order=ASC' . $url)
+                'href' => $this->url->api_link('restapi/search', 'sort=p.sort_order&order=ASC' . $url)
             );
 
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_name_asc'),
                 'value' => 'pd.name-ASC',
-                'href' => $this->url->link('product/search', 'sort=pd.name&order=ASC' . $url)
+                'href' => $this->url->api_link('restapi/search', 'sort=pd.name&order=ASC' . $url)
             );
 
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_name_desc'),
                 'value' => 'pd.name-DESC',
-                'href' => $this->url->link('product/search', 'sort=pd.name&order=DESC' . $url)
+                'href' => $this->url->api_link('restapi/search', 'sort=pd.name&order=DESC' . $url)
             );
 
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_price_asc'),
                 'value' => 'p.price-ASC',
-                'href' => $this->url->link('product/search', 'sort=p.price&order=ASC' . $url)
+                'href' => $this->url->api_link('restapi/search', 'sort=p.price&order=ASC' . $url)
             );
 
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_price_desc'),
                 'value' => 'p.price-DESC',
-                'href' => $this->url->link('product/search', 'sort=p.price&order=DESC' . $url)
+                'href' => $this->url->api_link('restapi/search', 'sort=p.price&order=DESC' . $url)
             );
 
             if ($this->config->get('config_review_status')) {
                 $data['sorts'][] = array(
                     'text' => $this->language->get('text_rating_desc'),
                     'value' => 'rating-DESC',
-                    'href' => $this->url->link('product/search', 'sort=rating&order=DESC' . $url)
+                    'href' => $this->url->api_link('restapi/search', 'sort=rating&order=DESC' . $url)
                 );
 
                 $data['sorts'][] = array(
                     'text' => $this->language->get('text_rating_asc'),
                     'value' => 'rating-ASC',
-                    'href' => $this->url->link('product/search', 'sort=rating&order=ASC' . $url)
+                    'href' => $this->url->api_link('restapi/search', 'sort=rating&order=ASC' . $url)
                 );
             }
 
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_model_asc'),
                 'value' => 'p.model-ASC',
-                'href' => $this->url->link('product/search', 'sort=p.model&order=ASC' . $url)
+                'href' => $this->url->api_link('restapi/search', 'sort=p.model&order=ASC' . $url)
             );
 
             $data['sorts'][] = array(
                 'text' => $this->language->get('text_model_desc'),
                 'value' => 'p.model-DESC',
-                'href' => $this->url->link('product/search', 'sort=p.model&order=DESC' . $url)
+                'href' => $this->url->api_link('restapi/search', 'sort=p.model&order=DESC' . $url)
             );
 
             $url = '';
@@ -465,7 +454,7 @@ class ControllerProductSearch extends Controller {
                 $data['limits'][] = array(
                     'text' => $value,
                     'value' => $value,
-                    'href' => $this->url->link('product/search', $url . '&limit=' . $value)
+                    'href' => $this->url->api_link('restapi/search', $url . '&limit=' . $value)
                 );
             }
 
@@ -531,9 +520,9 @@ class ControllerProductSearch extends Controller {
             $pagination->total = $product_total;
             $pagination->page = $page;
             $pagination->limit = $limit;
-            $pagination->url = $this->url->link('product/search', $url . '&page={page}');
+            $pagination->url = $this->url->api_link('restapi/search', $url . '&page={page}');
 
-            $data['pagination'] = $pagination->render();
+            $data['pagination'] = $pagination->api_render();
 
             $data['results'] = sprintf($this->language->get('text_pagination'), ($product_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($product_total - $limit)) ? $product_total : ((($page - 1) * $limit) + $limit), $product_total, ceil($product_total / $limit));
 
@@ -575,14 +564,8 @@ class ControllerProductSearch extends Controller {
         $data['order'] = $order;
         $data['limit'] = $limit;
 
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['column_right'] = $this->load->controller('common/column_right');
-        $data['content_top'] = $this->load->controller('common/content_top');
-        $data['content_bottom'] = $this->load->controller('common/content_bottom');
-        $data['footer'] = $this->load->controller('common/footer');
-        $data['header'] = $this->load->controller('common/header');
-
-        $this->response->setOutput($this->load->view('product/search', $data));
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($data));
     }
 
 }

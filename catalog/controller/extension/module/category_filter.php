@@ -108,24 +108,30 @@ class ControllerExtensionModuleCategoryFilter extends Controller {
 
         $url = '';
 
+
+
         if (isset($this->request->get['filter'])) {
             $url .= '&filter=' . $this->request->get['filter'];
         }
 
-        if (isset($this->request->get['manufacturer'])) {
-            $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+        if (isset($this->request->get['search'])) {
+            $url .= '&search=' . $this->request->get['search'];
         }
 
         if (isset($this->request->get['brand_filter'])) {
             $url .= '&brand_filter=' . $this->request->get['brand_filter'];
         }
 
+        if (isset($this->request->get['pr'])) {
+            $url .= '&pr=' . $this->request->get['pr'];
+        }
+
         if (isset($this->request->get['country_origin_filter'])) {
             $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
         }
 
-        if (isset($this->request->get['pr'])) {
-            $url .= '&pr=' . $this->request->get['pr'];
+        if (isset($this->request->get['manufacturer'])) {
+            $url .= '&manufacturer=' . $this->request->get['manufacturer'];
         }
 
         if (isset($this->request->get['sort'])) {

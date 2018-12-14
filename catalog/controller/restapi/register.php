@@ -1,22 +1,11 @@
 <?php
 
-class ControllerAccountRegister extends Controller {
+class ControllerRestApiRegister extends Controller {
 
     private $error = array();
 
     public function index() {
-        if ($this->customer->isLogged()) {
-            $this->response->redirect($this->url->link('account/account', '', true));
-        }
-
         $this->load->language('account/register');
-
-        $this->document->setTitle($this->language->get('heading_title'));
-
-        $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment.min.js');
-        $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment-with-locales.min.js');
-        $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
-        $this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
 
         $this->load->model('account/customer');
 
@@ -28,28 +17,10 @@ class ControllerAccountRegister extends Controller {
 
             $this->customer->login($this->request->post['email'], $this->request->post['password']);
 
-            unset($this->session->data['guest']);
+            $this->load->language('account/success');
 
-            $this->response->redirect($this->url->link('account/success'));
+            $data['text_message'] = sprintf($this->language->get('text_approval'), $this->config->get('config_name'), $this->url->api_link('information/contact'));
         }
-
-        $data['breadcrumbs'] = array();
-
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/home')
-        );
-
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_account'),
-            'href' => $this->url->link('account/account', '', true)
-        );
-
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_register'),
-            'href' => $this->url->link('account/register', '', true)
-        );
-        $data['text_account_already'] = sprintf($this->language->get('text_account_already'), $this->url->link('account/login', '', true));
 
         if (isset($this->error['warning'])) {
             $data['error_warning'] = $this->error['warning'];
@@ -98,8 +69,6 @@ class ControllerAccountRegister extends Controller {
         } else {
             $data['error_confirm'] = '';
         }
-
-        $data['action'] = $this->url->link('account/register', '', true);
 
         $data['customer_groups'] = array();
 
@@ -195,7 +164,7 @@ class ControllerAccountRegister extends Controller {
             $information_info = $this->model_catalog_information->getInformation($this->config->get('config_account_id'));
 
             if ($information_info) {
-                $data['text_agree'] = sprintf($this->language->get('text_agree'), $this->url->link('information/information/agree', 'information_id=' . $this->config->get('config_account_id'), true), $information_info['title'], $information_info['title']);
+                $data['text_agree'] = sprintf($this->language->get('text_agree'), $this->url->api_link('information/information/agree', 'information_id=' . $this->config->get('config_account_id'), true), $information_info['title'], $information_info['title']);
             } else {
                 $data['text_agree'] = '';
             }
@@ -209,14 +178,8 @@ class ControllerAccountRegister extends Controller {
             $data['agree'] = false;
         }
 
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['column_right'] = $this->load->controller('common/column_right');
-        $data['content_top'] = $this->load->controller('common/content_top');
-        $data['content_bottom'] = $this->load->controller('common/content_bottom');
-        $data['footer'] = $this->load->controller('common/footer');
-        $data['header'] = $this->load->controller('common/header');
-
-        $this->response->setOutput($this->load->view('account/register', $data));
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($data));
     }
 
     private function validate() {

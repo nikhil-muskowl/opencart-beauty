@@ -69,4 +69,24 @@ class Url {
         return $url;
     }
 
+    public function api_link($route, $args = '', $secure = false) {
+        if ($this->ssl && $secure) {
+            $url = $this->ssl . 'index.php?route=' . $route;
+        } else {
+            $url = $this->url . 'index.php?route=' . $route;
+        }
+
+        if ($args) {
+            if (is_array($args)) {
+                $url .= '&amp;' . http_build_query($args);
+            } else {
+                $url .= str_replace('&', '&amp;', '&' . ltrim($args, '&'));
+            }
+        }
+
+        $url = str_replace('&amp;', '&', $url);
+
+        return $url;
+    }
+
 }
