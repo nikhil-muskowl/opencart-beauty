@@ -149,7 +149,7 @@ class Pagination {
             }
 
             for ($i = $start; $i <= $end; $i++) {
-                $output[] = str_replace('&amp;', '&', str_replace('{page}', $i, $this->url));
+                $output[] = $i;
             }
         }
 

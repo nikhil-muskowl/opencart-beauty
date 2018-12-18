@@ -1,6 +1,6 @@
 <?php
 
-class ControllerRestApiSpecial extends Controller {
+class ControllerRestApiProductSpecial extends Controller {
 
     public function index() {
         $this->load->language('product/special');

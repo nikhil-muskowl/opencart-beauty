@@ -1,23 +1,9 @@
 <?php
 
-class ControllerCheckoutCart extends Controller {
+class ControllerRestApiCheckoutCart extends Controller {
 
     public function index() {
         $this->load->language('checkout/cart');
-
-        $this->document->setTitle($this->language->get('heading_title'));
-
-        $data['breadcrumbs'] = array();
-
-        $data['breadcrumbs'][] = array(
-            'href' => $this->url->link('common/home'),
-            'text' => $this->language->get('text_home')
-        );
-
-        $data['breadcrumbs'][] = array(
-            'href' => $this->url->link('checkout/cart'),
-            'text' => $this->language->get('heading_title')
-        );
 
         if ($this->cart->hasProducts() || !empty($this->session->data['vouchers'])) {
             if (!$this->cart->hasStock() && (!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning'))) {
@@ -30,12 +16,6 @@ class ControllerCheckoutCart extends Controller {
                 $data['error_warning'] = '';
             }
 
-            if ($this->config->get('config_customer_price') && !$this->customer->isLogged()) {
-                $data['attention'] = sprintf($this->language->get('text_login'), $this->url->link('account/login'), $this->url->link('account/register'));
-            } else {
-                $data['attention'] = '';
-            }
-
             if (isset($this->session->data['success'])) {
                 $data['success'] = $this->session->data['success'];
 
@@ -43,8 +23,6 @@ class ControllerCheckoutCart extends Controller {
             } else {
                 $data['success'] = '';
             }
-
-            $data['action'] = $this->url->link('checkout/cart/edit', '', true);
 
             if ($this->config->get('config_cart_weight')) {
                 $data['weight'] = $this->weight->format($this->cart->getWeight(), $this->config->get('config_weight_class_id'), $this->language->get('decimal_point'), $this->language->get('thousand_point'));
@@ -215,34 +193,8 @@ class ControllerCheckoutCart extends Controller {
                 );
             }
 
-            $data['continue'] = $this->url->link('common/home');
-
-            $data['checkout'] = $this->url->link('checkout/checkout', '', true);
-
-            $this->load->model('setting/extension');
-
-            $data['modules'] = array();
-
-            $files = glob(DIR_APPLICATION . '/controller/extension/total/*.php');
-
-            if ($files) {
-                foreach ($files as $file) {
-                    $result = $this->load->controller('extension/total/' . basename($file, '.php'));
-
-                    if ($result) {
-                        $data['modules'][] = $result;
-                    }
-                }
-            }
-
-            $data['column_left'] = $this->load->controller('common/column_left');
-            $data['column_right'] = $this->load->controller('common/column_right');
-            $data['content_top'] = $this->load->controller('common/content_top');
-            $data['content_bottom'] = $this->load->controller('common/content_bottom');
-            $data['footer'] = $this->load->controller('common/footer');
-            $data['header'] = $this->load->controller('common/header');
-
-            $this->response->setOutput($this->load->view('checkout/cart', $data));
+            $this->response->addHeader('Content-Type: application/json');
+            $this->response->setOutput(json_encode($data));
         } else {
             $data['text_error'] = $this->language->get('text_empty');
 
@@ -250,14 +202,8 @@ class ControllerCheckoutCart extends Controller {
 
             unset($this->session->data['success']);
 
-            $data['column_left'] = $this->load->controller('common/column_left');
-            $data['column_right'] = $this->load->controller('common/column_right');
-            $data['content_top'] = $this->load->controller('common/content_top');
-            $data['content_bottom'] = $this->load->controller('common/content_bottom');
-            $data['footer'] = $this->load->controller('common/footer');
-            $data['header'] = $this->load->controller('common/header');
-
-            $this->response->setOutput($this->load->view('error/not_found', $data));
+            $this->response->addHeader('Content-Type: application/json');
+            $this->response->setOutput(json_encode($data));
         }
     }
 
@@ -320,7 +266,7 @@ class ControllerCheckoutCart extends Controller {
             if (!$json) {
                 $this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id);
 
-                $json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
+                $json['success'] = sprintf($this->language->get('text_api_success'), $product_info['name']);
 
                 // Unset all shipping and payment methods
                 unset($this->session->data['shipping_method']);
@@ -373,8 +319,6 @@ class ControllerCheckoutCart extends Controller {
                 }
 
                 $json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
-            } else {
-                $json['redirect'] = str_replace('&amp;', '&', $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']));
             }
         }
 
@@ -388,20 +332,17 @@ class ControllerCheckoutCart extends Controller {
         $json = array();
 
         // Update
-        if (!empty($this->request->post['quantity'])) {           
-            foreach ($this->request->post['quantity'] as $key => $value) {
-                $this->cart->update($key, $value);
-            }
+        if (!empty($this->request->post['quantity']) && !empty($this->request->post['key'])) {
 
-            $this->session->data['success'] = $this->language->get('text_remove');
+            $this->cart->update($this->request->post['key'], $this->request->post['quantity']);
+
+            $json['success'] = $this->language->get('text_remove');
 
             unset($this->session->data['shipping_method']);
             unset($this->session->data['shipping_methods']);
             unset($this->session->data['payment_method']);
             unset($this->session->data['payment_methods']);
             unset($this->session->data['reward']);
-
-            $this->response->redirect($this->url->link('checkout/cart'));
         }
 
         $this->response->addHeader('Content-Type: application/json');

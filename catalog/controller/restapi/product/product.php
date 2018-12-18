@@ -1,6 +1,6 @@
 <?php
 
-class ControllerRestApiProduct extends Controller {
+class ControllerRestApiProductProduct extends Controller {
 
     private $error = array();
 

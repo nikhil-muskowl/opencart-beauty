@@ -1,51 +1,23 @@
 <?php
 
-class ControllerAccountEdit extends Controller {
+class ControllerRestApiAccountEdit extends Controller {
 
     private $error = array();
 
     public function index() {
         if (!$this->customer->isLogged()) {
-            $this->session->data['redirect'] = $this->url->link('account/edit', '', true);
-
-            $this->response->redirect($this->url->link('account/login', '', true));
+            $this->loginError();
         }
 
         $this->load->language('account/edit');
-
-        $this->document->setTitle($this->language->get('heading_title'));
-
-        $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment.min.js');
-        $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment-with-locales.min.js');
-        $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
-        $this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
 
         $this->load->model('account/customer');
 
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
             $this->model_account_customer->editCustomer($this->customer->getId(), $this->request->post);
 
-            $this->session->data['success'] = $this->language->get('text_success');
-
-            $this->response->redirect($this->url->link('account/account', '', true));
+            $data['success'] = $this->language->get('text_success');
         }
-
-        $data['breadcrumbs'] = array();
-
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/home')
-        );
-
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_account'),
-            'href' => $this->url->link('account/account', '', true)
-        );
-
-        $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_edit'),
-            'href' => $this->url->link('account/edit', '', true)
-        );
 
         if (isset($this->error['warning'])) {
             $data['error_warning'] = $this->error['warning'];
@@ -82,8 +54,6 @@ class ControllerAccountEdit extends Controller {
         } else {
             $data['error_custom_field'] = array();
         }
-
-        $data['action'] = $this->url->link('account/edit', '', true);
 
         if ($this->request->server['REQUEST_METHOD'] != 'POST') {
             $customer_info = $this->model_account_customer->getCustomer($this->customer->getId());
@@ -142,16 +112,8 @@ class ControllerAccountEdit extends Controller {
             $data['account_custom_field'] = array();
         }
 
-        $data['back'] = $this->url->link('account/account', '', true);
-
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['column_right'] = $this->load->controller('common/column_right');
-        $data['content_top'] = $this->load->controller('common/content_top');
-        $data['content_bottom'] = $this->load->controller('common/content_bottom');
-        $data['footer'] = $this->load->controller('common/footer');
-        $data['header'] = $this->load->controller('common/header');
-
-        $this->response->setOutput($this->load->view('account/edit', $data));
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($data));
     }
 
     protected function validate() {
@@ -191,6 +153,12 @@ class ControllerAccountEdit extends Controller {
         }
 
         return !$this->error;
+    }
+
+    public function loginError() {
+        $data['error_warning'] = 'Please login';
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($data));
     }
 
 }

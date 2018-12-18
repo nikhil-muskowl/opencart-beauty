@@ -1,6 +1,6 @@
 <?php
 
-class ControllerRestApiLogin extends Controller {
+class ControllerRestApiAccountLogin extends Controller {
 
     private $error = array();
 

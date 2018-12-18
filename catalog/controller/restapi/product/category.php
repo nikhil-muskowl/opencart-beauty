@@ -1,6 +1,6 @@
 <?php
 
-class ControllerRestApiCategory extends Controller {
+class ControllerRestApiProductCategory extends Controller {
 
     public function index() {
         $this->load->language('extension/module/category');
