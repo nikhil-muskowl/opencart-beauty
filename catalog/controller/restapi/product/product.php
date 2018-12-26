@@ -7,6 +7,10 @@ class ControllerRestApiProductProduct extends Controller {
     public function index() {
         $this->load->language('product/product');
 
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
+
         if (isset($this->request->get['product_id'])) {
             $product_id = (int) $this->request->get['product_id'];
         } else {
@@ -21,55 +25,10 @@ class ControllerRestApiProductProduct extends Controller {
 //        exit;
 
         if ($product_info) {
-            $url = '';
-
-            if (isset($this->request->get['filter'])) {
-                $url .= '&filter=' . $this->request->get['filter'];
-            }
-
-            if (isset($this->request->get['manufacturer_id'])) {
-                $url .= '&manufacturer_id=' . $this->request->get['manufacturer_id'];
-            }
-
-            if (isset($this->request->get['search'])) {
-                $url .= '&search=' . $this->request->get['search'];
-            }
-
-            if (isset($this->request->get['tag'])) {
-                $url .= '&tag=' . $this->request->get['tag'];
-            }
-
-            if (isset($this->request->get['description'])) {
-                $url .= '&description=' . $this->request->get['description'];
-            }
-
-            if (isset($this->request->get['category_id'])) {
-                $url .= '&category_id=' . $this->request->get['category_id'];
-            }
-
-            if (isset($this->request->get['sub_category'])) {
-                $url .= '&sub_category=' . $this->request->get['sub_category'];
-            }
-
-            if (isset($this->request->get['sort'])) {
-                $url .= '&sort=' . $this->request->get['sort'];
-            }
-
-            if (isset($this->request->get['order'])) {
-                $url .= '&order=' . $this->request->get['order'];
-            }
-
-            if (isset($this->request->get['page'])) {
-                $url .= '&page=' . $this->request->get['page'];
-            }
-
-            if (isset($this->request->get['limit'])) {
-                $url .= '&limit=' . $this->request->get['limit'];
-            }
 
             $data['heading_title'] = $product_info['name'];
 
-            $data['text_minimum'] = sprintf($this->language->get('text_minimum'), $product_info['minimum']);          
+            $data['text_minimum'] = sprintf($this->language->get('text_minimum'), $product_info['minimum']);
 
             $this->load->model('catalog/review');
 
@@ -78,7 +37,7 @@ class ControllerRestApiProductProduct extends Controller {
             $data['product_id'] = (int) $this->request->get['product_id'];
             $data['manufacturer'] = $product_info['manufacturer'];
             $data['country_origin'] = $product_info['country_origin'];
-            
+
             $data['model'] = $product_info['model'];
             $data['reward'] = $product_info['reward'];
             $data['points'] = $product_info['points'];
@@ -280,65 +239,23 @@ class ControllerRestApiProductProduct extends Controller {
             $data['recurrings'] = $this->model_catalog_product->getProfiles($this->request->get['product_id']);
 
             $this->model_catalog_product->updateViewed($this->request->get['product_id']);
-
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
+            $json['status'] = TRUE;
+            $json['data'] = $data;
         } else {
-            $url = '';
-
-            if (isset($this->request->get['filter'])) {
-                $url .= '&filter=' . $this->request->get['filter'];
-            }
-
-            if (isset($this->request->get['manufacturer_id'])) {
-                $url .= '&manufacturer_id=' . $this->request->get['manufacturer_id'];
-            }
-
-            if (isset($this->request->get['search'])) {
-                $url .= '&search=' . $this->request->get['search'];
-            }
-
-            if (isset($this->request->get['tag'])) {
-                $url .= '&tag=' . $this->request->get['tag'];
-            }
-
-            if (isset($this->request->get['description'])) {
-                $url .= '&description=' . $this->request->get['description'];
-            }
-
-            if (isset($this->request->get['category_id'])) {
-                $url .= '&category_id=' . $this->request->get['category_id'];
-            }
-
-            if (isset($this->request->get['sub_category'])) {
-                $url .= '&sub_category=' . $this->request->get['sub_category'];
-            }
-
-            if (isset($this->request->get['sort'])) {
-                $url .= '&sort=' . $this->request->get['sort'];
-            }
-
-            if (isset($this->request->get['order'])) {
-                $url .= '&order=' . $this->request->get['order'];
-            }
-
-            if (isset($this->request->get['page'])) {
-                $url .= '&page=' . $this->request->get['page'];
-            }
-
-            if (isset($this->request->get['limit'])) {
-                $url .= '&limit=' . $this->request->get['limit'];
-            }
-
-
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
+            $json['status'] = FALSE;
+            $json['data'] = array();
         }
+
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
     }
 
     public function review() {
         $this->load->language('product/product');
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         $this->load->model('catalog/review');
 
         if (isset($this->request->get['page'])) {
@@ -353,24 +270,30 @@ class ControllerRestApiProductProduct extends Controller {
 
         $results = $this->model_catalog_review->getReviewsByProductId($this->request->get['product_id'], ($page - 1) * 5, 5);
 
-        foreach ($results as $result) {
-            $data['reviews'][] = array(
-                'author' => $result['author'],
-                'text' => nl2br($result['text']),
-                'rating' => (int) $result['rating'],
-                'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added']))
-            );
+        if ($results) {
+            $data['status'] = TRUE;
+            foreach ($results as $result) {
+                $data['reviews'][] = array(
+                    'author' => $result['author'],
+                    'text' => nl2br($result['text']),
+                    'rating' => (int) $result['rating'],
+                    'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added']))
+                );
+            }
+
+            $pagination = new Pagination();
+            $pagination->total = $review_total;
+            $pagination->page = $page;
+            $pagination->limit = 5;
+            $pagination->url = $this->url->api_link('restapi/product/review', 'product_id=' . $this->request->get['product_id'] . '&page={page}');
+
+            $data['pagination'] = $pagination->api_render();
+
+            $data['results'] = sprintf($this->language->get('text_pagination'), ($review_total) ? (($page - 1) * 5) + 1 : 0, ((($page - 1) * 5) > ($review_total - 5)) ? $review_total : ((($page - 1) * 5) + 5), $review_total, ceil($review_total / 5));
+        } else {
+            $data['status'] = FALSE;
         }
 
-        $pagination = new Pagination();
-        $pagination->total = $review_total;
-        $pagination->page = $page;
-        $pagination->limit = 5;
-        $pagination->url = $this->url->api_link('restapi/product/review', 'product_id=' . $this->request->get['product_id'] . '&page={page}');
-
-        $data['pagination'] = $pagination->api_render();
-
-        $data['results'] = sprintf($this->language->get('text_pagination'), ($review_total) ? (($page - 1) * 5) + 1 : 0, ((($page - 1) * 5) > ($review_total - 5)) ? $review_total : ((($page - 1) * 5) + 5), $review_total, ceil($review_total / 5));
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($data));
@@ -378,7 +301,9 @@ class ControllerRestApiProductProduct extends Controller {
 
     public function write() {
         $this->load->language('product/product');
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         $json = array();
 
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
@@ -408,8 +333,11 @@ class ControllerRestApiProductProduct extends Controller {
 
                 $this->model_catalog_review->addReview($this->request->get['product_id'], $this->request->post);
 
+                $json['status'] = TRUE;
                 $json['success'] = $this->language->get('text_success');
             }
+        } else {
+            $json['status'] = FALSE;
         }
 
         $this->response->addHeader('Content-Type: application/json');
@@ -419,7 +347,11 @@ class ControllerRestApiProductProduct extends Controller {
     public function getRecurringDescription() {
         $this->load->language('product/product');
         $this->load->model('catalog/product');
-
+        
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
+        
         if (isset($this->request->post['product_id'])) {
             $product_id = $this->request->post['product_id'];
         } else {

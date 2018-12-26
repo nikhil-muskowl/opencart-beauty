@@ -9,11 +9,16 @@ class ControllerRestApiProductSpecial extends Controller {
 
         $this->load->model('tool/image');
 
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
+
         if (isset($this->request->get['category_filter'])) {
             $category_filter = $this->request->get['category_filter'];
         } else {
             $category_filter = 0;
         }
+        
         if (isset($this->request->get['pr'])) {
             $pr = $this->request->get['pr'];
         } else {
@@ -62,7 +67,7 @@ class ControllerRestApiProductSpecial extends Controller {
             $limit = $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit');
         }
 
-        
+
         $data['heading_title'] = $this->language->get('heading_title');
 
         $url = '';
@@ -70,6 +75,7 @@ class ControllerRestApiProductSpecial extends Controller {
         if (isset($this->request->get['category_filter'])) {
             $url .= '&category_filter=' . $this->request->get['category_filter'];
         }
+        
         if (isset($this->request->get['country_origin_filter'])) {
             $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
         }
@@ -174,6 +180,7 @@ class ControllerRestApiProductSpecial extends Controller {
         if (isset($this->request->get['category_filter'])) {
             $url .= '&category_filter=' . $this->request->get['category_filter'];
         }
+        
         if (isset($this->request->get['country_origin_filter'])) {
             $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
         }
@@ -321,9 +328,11 @@ class ControllerRestApiProductSpecial extends Controller {
         if (isset($this->request->get['category_filter'])) {
             $url .= '&category_filter=' . $this->request->get['category_filter'];
         }
+        
         if (isset($this->request->get['country_origin_filter'])) {
             $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
         }
+        
         if (isset($this->request->get['brand_filter'])) {
             $url .= '&brand_filter=' . $this->request->get['brand_filter'];
         }
@@ -360,7 +369,7 @@ class ControllerRestApiProductSpecial extends Controller {
 
         $data['pagination'] = $pagination->render();
 
-        $data['results'] = sprintf($this->language->get('text_pagination'), ($product_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($product_total - $limit)) ? $product_total : ((($page - 1) * $limit) + $limit), $product_total, ceil($product_total / $limit));     
+        $data['results'] = sprintf($this->language->get('text_pagination'), ($product_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($product_total - $limit)) ? $product_total : ((($page - 1) * $limit) + $limit), $product_total, ceil($product_total / $limit));
 
         $data['sort'] = $sort;
         $data['order'] = $order;

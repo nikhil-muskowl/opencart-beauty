@@ -5,8 +5,8 @@ class ControllerRestApiAccountPassword extends Controller {
     private $error = array();
 
     public function index() {
-        if (!$this->customer->isLogged()) {
-            $this->loginError();
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
         }
 
         $this->load->language('account/password');
@@ -16,34 +16,24 @@ class ControllerRestApiAccountPassword extends Controller {
 
             $this->model_account_customer->editPassword($this->customer->getEmail(), $this->request->post['password']);
 
+            $data['status'] = TRUE;
             $data['success'] = $this->language->get('text_success');
-        }
-
-        if (isset($this->error['password'])) {
-            $data['error_password'] = $this->error['password'];
         } else {
-            $data['error_password'] = '';
+            $data['status'] = FALSE;
+            if (isset($this->error['password'])) {
+                $data['error_password'] = $this->error['password'];
+            } else {
+                $data['error_password'] = '';
+            }
+
+            if (isset($this->error['confirm'])) {
+                $data['error_confirm'] = $this->error['confirm'];
+            } else {
+                $data['error_confirm'] = '';
+            }
         }
 
-        if (isset($this->error['confirm'])) {
-            $data['error_confirm'] = $this->error['confirm'];
-        } else {
-            $data['error_confirm'] = '';
-        }
 
-        $data['action'] = $this->url->link('account/password', '', true);
-
-        if (isset($this->request->post['password'])) {
-            $data['password'] = $this->request->post['password'];
-        } else {
-            $data['password'] = '';
-        }
-
-        if (isset($this->request->post['confirm'])) {
-            $data['confirm'] = $this->request->post['confirm'];
-        } else {
-            $data['confirm'] = '';
-        }
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($data));

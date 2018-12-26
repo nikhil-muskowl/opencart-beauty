@@ -42,42 +42,32 @@ class ControllerRestApiAccountLogin extends Controller {
 
             $this->load->language('account/success');
             $this->session->data['success'] = $this->language->get('text_success');
-        }
 
-        if (isset($customer_info['customer_id']) && $customer_info['customer_id']) {
-            $data['customer_id'] = $customer_info['customer_id'];
+            if (isset($customer_info['customer_id']) && $customer_info['customer_id']) {
+                $data['customer_id'] = $customer_info['customer_id'];
+            } else {
+                $data['customer_id'] = 0;
+            }
+            $data['status'] = TRUE;
+
+            if (isset($this->session->data['success'])) {
+                $data['success'] = $this->session->data['success'];
+
+                unset($this->session->data['success']);
+            } else {
+                $data['success'] = '';
+            }
         } else {
-            $data['customer_id'] = 0;
-        }
+            $data['status'] = FALSE;
+            if (isset($this->session->data['error'])) {
+                $data['error_warning'] = $this->session->data['error'];
 
-        if (isset($this->session->data['error'])) {
-            $data['error_warning'] = $this->session->data['error'];
-
-            unset($this->session->data['error']);
-        } elseif (isset($this->error['warning'])) {
-            $data['error_warning'] = $this->error['warning'];
-        } else {
-            $data['error_warning'] = '';
-        }
-
-        if (isset($this->session->data['success'])) {
-            $data['success'] = $this->session->data['success'];
-
-            unset($this->session->data['success']);
-        } else {
-            $data['success'] = '';
-        }
-
-        if (isset($this->request->post['email'])) {
-            $data['email'] = $this->request->post['email'];
-        } else {
-            $data['email'] = '';
-        }
-
-        if (isset($this->request->post['password'])) {
-            $data['password'] = $this->request->post['password'];
-        } else {
-            $data['password'] = '';
+                unset($this->session->data['error']);
+            } elseif (isset($this->error['warning'])) {
+                $data['error_warning'] = $this->error['warning'];
+            } else {
+                $data['error_warning'] = '';
+            }
         }
 
         $this->response->addHeader('Content-Type: application/json');

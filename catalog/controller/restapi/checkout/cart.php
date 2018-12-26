@@ -5,6 +5,10 @@ class ControllerRestApiCheckoutCart extends Controller {
     public function index() {
         $this->load->language('checkout/cart');
 
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
+
         if ($this->cart->hasProducts() || !empty($this->session->data['vouchers'])) {
             if (!$this->cart->hasStock() && (!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning'))) {
                 $data['error_warning'] = $this->language->get('error_stock');
@@ -193,24 +197,23 @@ class ControllerRestApiCheckoutCart extends Controller {
                 );
             }
 
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
+            $data['status'] = TRUE;
         } else {
             $data['text_error'] = $this->language->get('text_empty');
-
-            $data['continue'] = $this->url->link('common/home');
-
-            unset($this->session->data['success']);
-
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
+            $data['status'] = FALSE;
         }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($data));
     }
 
     public function add() {
         $this->load->language('checkout/cart');
 
         $json = array();
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
 
         if (isset($this->request->post['product_id'])) {
             $product_id = (int) $this->request->post['product_id'];
@@ -320,6 +323,10 @@ class ControllerRestApiCheckoutCart extends Controller {
 
                 $json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
             }
+
+            $json['status'] = TRUE;
+        } else {
+            $json['status'] = FALSE;
         }
 
         $this->response->addHeader('Content-Type: application/json');
@@ -330,7 +337,9 @@ class ControllerRestApiCheckoutCart extends Controller {
         $this->load->language('checkout/cart');
 
         $json = array();
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         // Update
         if (!empty($this->request->post['quantity']) && !empty($this->request->post['key'])) {
 
@@ -343,6 +352,10 @@ class ControllerRestApiCheckoutCart extends Controller {
             unset($this->session->data['payment_method']);
             unset($this->session->data['payment_methods']);
             unset($this->session->data['reward']);
+            
+             $json['status'] = TRUE;
+        }else{
+             $json['status'] = FALSE;
         }
 
         $this->response->addHeader('Content-Type: application/json');
@@ -353,7 +366,9 @@ class ControllerRestApiCheckoutCart extends Controller {
         $this->load->language('checkout/cart');
 
         $json = array();
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         // Remove
         if (isset($this->request->post['key'])) {
             $this->cart->remove($this->request->post['key']);
@@ -413,6 +428,10 @@ class ControllerRestApiCheckoutCart extends Controller {
             }
 
             $json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+            
+             $json['status'] = TRUE;
+        }else{
+             $json['status'] = FALSE;
         }
 
         $this->response->addHeader('Content-Type: application/json');

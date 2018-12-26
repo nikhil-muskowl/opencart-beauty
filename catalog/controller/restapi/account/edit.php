@@ -5,8 +5,8 @@ class ControllerRestApiAccountEdit extends Controller {
     private $error = array();
 
     public function index() {
-        if (!$this->customer->isLogged()) {
-            $this->loginError();
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
         }
 
         $this->load->language('account/edit');
@@ -16,101 +16,47 @@ class ControllerRestApiAccountEdit extends Controller {
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
             $this->model_account_customer->editCustomer($this->customer->getId(), $this->request->post);
 
+            $data['status'] = TRUE;
             $data['success'] = $this->language->get('text_success');
-        }
-
-        if (isset($this->error['warning'])) {
-            $data['error_warning'] = $this->error['warning'];
         } else {
-            $data['error_warning'] = '';
-        }
+            $data['status'] = FALSE;
+            if (isset($this->error['warning'])) {
+                $data['error_warning'] = $this->error['warning'];
+            } else {
+                $data['error_warning'] = '';
+            }
 
-        if (isset($this->error['firstname'])) {
-            $data['error_firstname'] = $this->error['firstname'];
-        } else {
-            $data['error_firstname'] = '';
-        }
+            if (isset($this->error['firstname'])) {
+                $data['error_firstname'] = $this->error['firstname'];
+            } else {
+                $data['error_firstname'] = '';
+            }
 
-        if (isset($this->error['lastname'])) {
-            $data['error_lastname'] = $this->error['lastname'];
-        } else {
-            $data['error_lastname'] = '';
-        }
+            if (isset($this->error['lastname'])) {
+                $data['error_lastname'] = $this->error['lastname'];
+            } else {
+                $data['error_lastname'] = '';
+            }
 
-        if (isset($this->error['email'])) {
-            $data['error_email'] = $this->error['email'];
-        } else {
-            $data['error_email'] = '';
-        }
+            if (isset($this->error['email'])) {
+                $data['error_email'] = $this->error['email'];
+            } else {
+                $data['error_email'] = '';
+            }
 
-        if (isset($this->error['telephone'])) {
-            $data['error_telephone'] = $this->error['telephone'];
-        } else {
-            $data['error_telephone'] = '';
-        }
+            if (isset($this->error['telephone'])) {
+                $data['error_telephone'] = $this->error['telephone'];
+            } else {
+                $data['error_telephone'] = '';
+            }
 
-        if (isset($this->error['custom_field'])) {
-            $data['error_custom_field'] = $this->error['custom_field'];
-        } else {
-            $data['error_custom_field'] = array();
-        }
-
-        if ($this->request->server['REQUEST_METHOD'] != 'POST') {
-            $customer_info = $this->model_account_customer->getCustomer($this->customer->getId());
-        }
-
-        if (isset($this->request->post['firstname'])) {
-            $data['firstname'] = $this->request->post['firstname'];
-        } elseif (!empty($customer_info)) {
-            $data['firstname'] = $customer_info['firstname'];
-        } else {
-            $data['firstname'] = '';
-        }
-
-        if (isset($this->request->post['lastname'])) {
-            $data['lastname'] = $this->request->post['lastname'];
-        } elseif (!empty($customer_info)) {
-            $data['lastname'] = $customer_info['lastname'];
-        } else {
-            $data['lastname'] = '';
-        }
-
-        if (isset($this->request->post['email'])) {
-            $data['email'] = $this->request->post['email'];
-        } elseif (!empty($customer_info)) {
-            $data['email'] = $customer_info['email'];
-        } else {
-            $data['email'] = '';
-        }
-
-        if (isset($this->request->post['telephone'])) {
-            $data['telephone'] = $this->request->post['telephone'];
-        } elseif (!empty($customer_info)) {
-            $data['telephone'] = $customer_info['telephone'];
-        } else {
-            $data['telephone'] = '';
-        }
-
-        // Custom Fields
-        $data['custom_fields'] = array();
-
-        $this->load->model('account/custom_field');
-
-        $custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
-
-        foreach ($custom_fields as $custom_field) {
-            if ($custom_field['location'] == 'account') {
-                $data['custom_fields'][] = $custom_field;
+            if (isset($this->error['custom_field'])) {
+                $data['error_custom_field'] = $this->error['custom_field'];
+            } else {
+                $data['error_custom_field'] = array();
             }
         }
 
-        if (isset($this->request->post['custom_field']['account'])) {
-            $data['account_custom_field'] = $this->request->post['custom_field']['account'];
-        } elseif (isset($customer_info)) {
-            $data['account_custom_field'] = json_decode($customer_info['custom_field'], true);
-        } else {
-            $data['account_custom_field'] = array();
-        }
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($data));
@@ -153,12 +99,6 @@ class ControllerRestApiAccountEdit extends Controller {
         }
 
         return !$this->error;
-    }
-
-    public function loginError() {
-        $data['error_warning'] = 'Please login';
-        $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode($data));
     }
 
 }

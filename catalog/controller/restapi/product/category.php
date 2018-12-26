@@ -13,54 +13,56 @@ class ControllerRestApiProductCategory extends Controller {
 
         $categories = $this->model_catalog_category->getCategories(0);
 
-        foreach ($categories as $category) {
-            $children_data = array();
+        if ($categories) {
+            $data['status'] = TRUE;
+            foreach ($categories as $category) {
+                $children_data = array();
 
 
-            $children = $this->model_catalog_category->getCategories($category['category_id']);
+                $children = $this->model_catalog_category->getCategories($category['category_id']);
 
-            foreach ($children as $child) {
+                foreach ($children as $child) {
 
-                $children_data2 = array();
+                    $children_data2 = array();
 
-                $children2 = $this->model_catalog_category->getCategories($child['category_id']);
+                    $children2 = $this->model_catalog_category->getCategories($child['category_id']);
 
-                foreach ($children2 as $child2) {
-                    $filter_data2 = array('filter_category_id' => $child2['category_id'], 'filter_sub_category' => true);
+                    foreach ($children2 as $child2) {
+                        $filter_data2 = array('filter_category_id' => $child2['category_id'], 'filter_sub_category' => true);
 
-                    $children_data2[] = array(
-                        'category_id' => $child2['category_id'],
-                        'name' => $child2['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data2) . ')' : ''),
-                        'href' => $this->url->api_link('restapi/category/info', 'category_id=' . $child2['category_id'])
+                        $children_data2[] = array(
+                            'category_id' => $child2['category_id'],
+                            'name' => $child2['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data2) . ')' : ''),
+                            'href' => $this->url->api_link('restapi/category/info', 'category_id=' . $child2['category_id'])
+                        );
+                    }
+
+                    $filter_data = array('filter_category_id' => $child['category_id'], 'filter_sub_category' => true);
+
+                    $children_data[] = array(
+                        'category_id' => $child['category_id'],
+                        'name' => $child['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
+                        'href' => $this->url->api_link('restapi/category/info', 'category_id=' . $child['category_id']),
+                        'children' => $children_data2
                     );
                 }
 
-                $filter_data = array('filter_category_id' => $child['category_id'], 'filter_sub_category' => true);
 
-                $children_data[] = array(
-                    'category_id' => $child['category_id'],
-                    'name' => $child['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-                    'href' => $this->url->api_link('restapi/category/info', 'category_id=' . $child['category_id']),
-                    'children' => $children_data2
+                $filter_data = array(
+                    'filter_category_id' => $category['category_id'],
+                    'filter_sub_category' => true
+                );
+
+                $data['categories'][] = array(
+                    'category_id' => $category['category_id'],
+                    'name' => $category['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
+                    'children' => $children_data,
+                    'href' => $this->url->api_link('restapi/category/info', 'category_id=' . $category['category_id'])
                 );
             }
-
-
-            $filter_data = array(
-                'filter_category_id' => $category['category_id'],
-                'filter_sub_category' => true
-            );
-
-            $data['categories'][] = array(
-                'category_id' => $category['category_id'],
-                'name' => $category['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : ''),
-                'children' => $children_data,
-                'href' => $this->url->api_link('restapi/category/info', 'category_id=' . $category['category_id'])
-            );
+        } else {
+            $data['status'] = FALSE;
         }
-
-//        print_r($data);
-//        exit;
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($data));
@@ -480,47 +482,19 @@ class ControllerRestApiProductCategory extends Controller {
 
             $data['results'] = sprintf($this->language->get('text_pagination'), ($product_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($product_total - $limit)) ? $product_total : ((($page - 1) * $limit) + $limit), $product_total, ceil($product_total / $limit));
 
-
             $data['sort'] = $sort;
             $data['order'] = $order;
             $data['limit'] = $limit;
 
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
+            $data['status'] = TRUE;
         } else {
-            $url = '';
-
-            if (isset($this->request->get['country_origin_filter'])) {
-                $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
-            }
-
-            if (isset($this->request->get['brand_filter'])) {
-                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
-            }
-
-            if (isset($this->request->get['filter'])) {
-                $url .= '&filter=' . $this->request->get['filter'];
-            }
-
-            if (isset($this->request->get['manufacturer'])) {
-                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
-            }
-
-            if (isset($this->request->get['pr'])) {
-                $url .= '&pr=' . $this->request->get['pr'];
-            }
-
-            if (isset($this->request->get['limit'])) {
-                $url .= '&limit=' . $this->request->get['limit'];
-            }
-
             $data['heading_title'] = $this->language->get('text_error');
-
             $data['text_error'] = $this->language->get('text_error');
-
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
+            $data['status'] = FALSE;
         }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($data));
     }
 
 }

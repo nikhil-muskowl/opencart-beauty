@@ -3,8 +3,8 @@
 class ControllerRestApiAccountOrder extends Controller {
 
     public function index() {
-        if (!$this->customer->isLogged()) {
-            $this->loginError();
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
         }
 
         $this->load->language('account/order');
@@ -62,14 +62,16 @@ class ControllerRestApiAccountOrder extends Controller {
     public function info() {
         $this->load->language('account/order');
 
+        $json = array();
+
         if (isset($this->request->get['order_id'])) {
             $order_id = $this->request->get['order_id'];
         } else {
             $order_id = 0;
         }
 
-        if (!$this->customer->isLogged()) {
-            $this->loginError();
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
         }
 
         $this->load->model('account/order');
@@ -77,30 +79,11 @@ class ControllerRestApiAccountOrder extends Controller {
         $order_info = $this->model_account_order->getOrder($order_id);
 
         if ($order_info) {
-            $this->document->setTitle($this->language->get('text_order'));
 
             $url = '';
 
             if (isset($this->request->get['page'])) {
                 $url .= '&page=' . $this->request->get['page'];
-            }
-
-
-
-            if (isset($this->session->data['error'])) {
-                $data['error_warning'] = $this->session->data['error'];
-
-                unset($this->session->data['error']);
-            } else {
-                $data['error_warning'] = '';
-            }
-
-            if (isset($this->session->data['success'])) {
-                $data['success'] = $this->session->data['success'];
-
-                unset($this->session->data['success']);
-            } else {
-                $data['success'] = '';
             }
 
             if ($order_info['invoice_no']) {
@@ -275,13 +258,15 @@ class ControllerRestApiAccountOrder extends Controller {
                 );
             }
 
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
+            $json['status'] = TRUE;
+            $json['data'] = $data;
         } else {
-            $data['error_warning'] = 'no order found';
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
+            $json['status'] = FALSE;
+            $json['data'] = array();
         }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
     }
 
     public function reorder() {
@@ -330,7 +315,7 @@ class ControllerRestApiAccountOrder extends Controller {
 
                     $this->cart->add($order_product_info['product_id'], $order_product_info['quantity'], $option_data);
 
-                    $data['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $product_info['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
+                    $data['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id = ' . $product_info['product_id']), $product_info['name'], $this->url->link('checkout/cart'));
 
                     unset($this->session->data['shipping_method']);
                     unset($this->session->data['shipping_methods']);
@@ -342,14 +327,8 @@ class ControllerRestApiAccountOrder extends Controller {
             }
         }
 
-       $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode($data));
-    }
-
-    public function loginError() {
-        $data['error_warning'] = 'Please login';
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($data));
     }
-
+   
 }

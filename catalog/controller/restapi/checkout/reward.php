@@ -4,7 +4,9 @@ class ControllerRestApiCheckoutReward extends Controller {
 
     public function index() {
         $this->load->language('api/reward');
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         // Delete past reward in case there is an error
         unset($this->session->data['reward']);
 
@@ -35,8 +37,10 @@ class ControllerRestApiCheckoutReward extends Controller {
 
         if (!$json) {
             $this->session->data['reward'] = abs($this->request->post['reward']);
-
+            $json['status'] = TRUE;
             $json['success'] = $this->language->get('text_success');
+        } else {
+            $json['status'] = FALSE;
         }
 
 
@@ -46,18 +50,23 @@ class ControllerRestApiCheckoutReward extends Controller {
 
     public function maximum() {
         $this->load->language('api/reward');
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         $json = array();
-
 
         $json['maximum'] = 0;
 
-        foreach ($this->cart->getProducts() as $product) {
-            if ($product['points']) {
-                $json['maximum'] += $product['points'];
+        if ($this->cart->getProducts()) {
+            $json['status'] = TRUE;
+            foreach ($this->cart->getProducts() as $product) {
+                if ($product['points']) {
+                    $json['maximum'] += $product['points'];
+                }
             }
+        } else {
+            $json['status'] = FALSE;
         }
-
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
@@ -65,9 +74,11 @@ class ControllerRestApiCheckoutReward extends Controller {
 
     public function available() {
         $this->load->language('api/reward');
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         $json = array();
-
+        $json['status'] = TRUE;
         $json['points'] = $this->customer->getRewardPoints();
 
         $this->response->addHeader('Content-Type: application/json');

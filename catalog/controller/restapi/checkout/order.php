@@ -6,7 +6,9 @@ class ControllerRestApiCheckoutOrder extends Controller {
         $this->load->language('api/order');
 
         $json = array();
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         // Customer
         if (!isset($this->session->data['customer'])) {
             $json['error'] = $this->language->get('error_customer');
@@ -352,6 +354,10 @@ class ControllerRestApiCheckoutOrder extends Controller {
 
             // clear cart since the order has already been successfully stored.
             $this->cart->clear();
+
+            $json['status'] = TRUE;
+        } else {
+            $json['status'] = FALSE;
         }
 
 
@@ -363,11 +369,13 @@ class ControllerRestApiCheckoutOrder extends Controller {
         $this->load->language('api/order');
 
         $json = array();
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         $this->load->model('checkout/order');
 
-        if (isset($this->request->get['order_id'])) {
-            $order_id = $this->request->get['order_id'];
+        if (isset($this->request->post['order_id'])) {
+            $order_id = $this->request->post['order_id'];
         } else {
             $order_id = 0;
         }
@@ -458,7 +466,7 @@ class ControllerRestApiCheckoutOrder extends Controller {
                     break;
                 }
             }
-
+            $json['status'] = TRUE;
             if (!$json) {
                 $json['success'] = $this->language->get('text_success');
 
@@ -682,8 +690,12 @@ class ControllerRestApiCheckoutOrder extends Controller {
                 }
 
                 $this->model_checkout_order->addOrderHistory($order_id, $order_status_id);
+                $json['status'] = TRUE;
+            } else {
+                $json['status'] = FALSE;
             }
         } else {
+            $json['status'] = FALSE;
             $json['error'] = $this->language->get('error_not_found');
         }
 
@@ -698,7 +710,9 @@ class ControllerRestApiCheckoutOrder extends Controller {
         $json = array();
 
         $this->load->model('checkout/order');
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         if (isset($this->request->get['order_id'])) {
             $order_id = $this->request->get['order_id'];
         } else {
@@ -709,9 +723,10 @@ class ControllerRestApiCheckoutOrder extends Controller {
 
         if ($order_info) {
             $this->model_checkout_order->deleteOrder($order_id);
-
+            $json['status'] = TRUE;
             $json['success'] = $this->language->get('text_success');
         } else {
+            $json['status'] = FALSE;
             $json['error'] = $this->language->get('error_not_found');
         }
 
@@ -725,7 +740,9 @@ class ControllerRestApiCheckoutOrder extends Controller {
 
         $json = array();
 
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         $this->load->model('checkout/order');
 
         if (isset($this->request->get['order_id'])) {
@@ -738,9 +755,10 @@ class ControllerRestApiCheckoutOrder extends Controller {
 
         if ($order_info) {
             $json['order'] = $order_info;
-
+            $json['status'] = TRUE;
             $json['success'] = $this->language->get('text_success');
         } else {
+            $json['status'] = FALSE;
             $json['error'] = $this->language->get('error_not_found');
         }
 
@@ -751,7 +769,9 @@ class ControllerRestApiCheckoutOrder extends Controller {
 
     public function history() {
         $this->load->language('api/order');
-
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
         $json = array();
 
         // Add keys for missing post vars
@@ -780,9 +800,10 @@ class ControllerRestApiCheckoutOrder extends Controller {
 
         if ($order_info) {
             $this->model_checkout_order->addOrderHistory($order_id, $this->request->post['order_status_id'], $this->request->post['comment'], $this->request->post['notify'], $this->request->post['override']);
-
+            $json['status'] = TRUE;
             $json['success'] = $this->language->get('text_success');
         } else {
+            $json['status'] = FALSE;
             $json['error'] = $this->language->get('error_not_found');
         }
 

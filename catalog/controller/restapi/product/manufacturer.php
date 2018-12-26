@@ -13,23 +13,28 @@ class ControllerRestApiProductManufacturer extends Controller {
 
         $results = $this->model_catalog_manufacturer->getManufacturers();
 
-        foreach ($results as $result) {
-            if (is_numeric(utf8_substr($result['name'], 0, 1))) {
-                $key = '0 - 9';
-            } else {
-                $key = utf8_substr(utf8_strtoupper($result['name']), 0, 1);
-            }
+        if ($results) {
 
-            if (!isset($data['categories'][$key])) {
-                $data['categories'][$key]['name'] = $key;
-            }
+            $data['status'] = TRUE;
+            foreach ($results as $result) {
+                if (is_numeric(utf8_substr($result['name'], 0, 1))) {
+                    $key = '0 - 9';
+                } else {
+                    $key = utf8_substr(utf8_strtoupper($result['name']), 0, 1);
+                }
 
-            $data['categories'][$key]['manufacturer'][] = array(
-                'manufacturer_id' => $result['manufacturer_id'],
-                'name' => $result['name'],
-            );
+                if (!isset($data['categories'][$key])) {
+                    $data['categories'][$key]['name'] = $key;
+                }
+
+                $data['categories'][$key]['manufacturer'][] = array(
+                    'manufacturer_id' => $result['manufacturer_id'],
+                    'name' => $result['name'],
+                );
+            }
+        } else {
+            $data['status'] = FALSE;
         }
-
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($data));
     }
@@ -415,58 +420,16 @@ class ControllerRestApiProductManufacturer extends Controller {
             $data['order'] = $order;
             $data['limit'] = $limit;
 
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
-        } else {
-            $url = '';
-
-            if (isset($this->request->get['manufacturer_id'])) {
-                $url .= '&manufacturer_id=' . $this->request->get['manufacturer_id'];
-            }
-
-            if (isset($this->request->get['country_origin_filter'])) {
-                $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
-            }
-
-            if (isset($this->request->get['category_filter'])) {
-                $url .= '&category_filter=' . $this->request->get['category_filter'];
-            }
-
-            if (isset($this->request->get['filter'])) {
-                $url .= '&filter=' . $this->request->get['filter'];
-            }
-
-            if (isset($this->request->get['manufacturer'])) {
-                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
-            }
-
-            if (isset($this->request->get['pr'])) {
-                $url .= '&pr=' . $this->request->get['pr'];
-            }
-
-            if (isset($this->request->get['sort'])) {
-                $url .= '&sort=' . $this->request->get['sort'];
-            }
-
-            if (isset($this->request->get['order'])) {
-                $url .= '&order=' . $this->request->get['order'];
-            }
-
-            if (isset($this->request->get['page'])) {
-                $url .= '&page=' . $this->request->get['page'];
-            }
-
-            if (isset($this->request->get['limit'])) {
-                $url .= '&limit=' . $this->request->get['limit'];
-            }
-
+            $data['status'] = TRUE;
+        } else {           
             $data['heading_title'] = $this->language->get('text_error');
 
             $data['text_error'] = $this->language->get('text_error');
-
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(json_encode($data));
+            $data['status'] = FALSE;
         }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($data));
     }
 
 }

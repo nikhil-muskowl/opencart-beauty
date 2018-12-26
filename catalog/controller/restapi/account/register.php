@@ -18,58 +18,88 @@ class ControllerRestApiAccountRegister extends Controller {
             $this->customer->login($this->request->post['email'], $this->request->post['password']);
 
             $this->load->language('account/success');
-
-            $data['text_message'] = sprintf($this->language->get('text_approval'), $this->config->get('config_name'), $this->url->api_link('information/contact'));
-        }
-
-        if (isset($this->error['warning'])) {
-            $data['error_warning'] = $this->error['warning'];
+            $data['status'] = TRUE;
+            $data['text_message'] = sprintf($this->language->get('text_api_approval'), $this->config->get('config_name'));
         } else {
-            $data['error_warning'] = '';
+
+            $data['status'] = FALSE;
+
+            if (isset($this->error['warning'])) {
+                $data['error_warning'] = $this->error['warning'];
+            } else {
+                $data['error_warning'] = '';
+            }
+
+            if (isset($this->error['firstname'])) {
+                $data['error_firstname'] = $this->error['firstname'];
+            } else {
+                $data['error_firstname'] = '';
+            }
+
+            if (isset($this->error['lastname'])) {
+                $data['error_lastname'] = $this->error['lastname'];
+            } else {
+                $data['error_lastname'] = '';
+            }
+
+            if (isset($this->error['email'])) {
+                $data['error_email'] = $this->error['email'];
+            } else {
+                $data['error_email'] = '';
+            }
+
+            if (isset($this->error['telephone'])) {
+                $data['error_telephone'] = $this->error['telephone'];
+            } else {
+                $data['error_telephone'] = '';
+            }
+
+            if (isset($this->error['custom_field'])) {
+                $data['error_custom_field'] = $this->error['custom_field'];
+            } else {
+                $data['error_custom_field'] = array();
+            }
+
+            if (isset($this->error['password'])) {
+                $data['error_password'] = $this->error['password'];
+            } else {
+                $data['error_password'] = '';
+            }
+
+            if (isset($this->error['confirm'])) {
+                $data['error_confirm'] = $this->error['confirm'];
+            } else {
+                $data['error_confirm'] = '';
+            }
         }
 
-        if (isset($this->error['firstname'])) {
-            $data['error_firstname'] = $this->error['firstname'];
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($data));
+    }
+
+    public function custom_fields() {
+        // Custom Fields
+        $data['custom_fields'] = array();
+
+        $this->load->model('account/custom_field');
+
+        $custom_fields = $this->model_account_custom_field->getCustomFields();
+        if ($custom_fields) {
+            foreach ($custom_fields as $custom_field) {
+                if ($custom_field['location'] == 'account') {
+                    $data['custom_fields'][] = $custom_field;
+                }
+            }
+            $data['status'] = TRUE;
         } else {
-            $data['error_firstname'] = '';
+            $data['status'] = FALSE;
         }
 
-        if (isset($this->error['lastname'])) {
-            $data['error_lastname'] = $this->error['lastname'];
-        } else {
-            $data['error_lastname'] = '';
-        }
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($data));
+    }
 
-        if (isset($this->error['email'])) {
-            $data['error_email'] = $this->error['email'];
-        } else {
-            $data['error_email'] = '';
-        }
-
-        if (isset($this->error['telephone'])) {
-            $data['error_telephone'] = $this->error['telephone'];
-        } else {
-            $data['error_telephone'] = '';
-        }
-
-        if (isset($this->error['custom_field'])) {
-            $data['error_custom_field'] = $this->error['custom_field'];
-        } else {
-            $data['error_custom_field'] = array();
-        }
-
-        if (isset($this->error['password'])) {
-            $data['error_password'] = $this->error['password'];
-        } else {
-            $data['error_password'] = '';
-        }
-
-        if (isset($this->error['confirm'])) {
-            $data['error_confirm'] = $this->error['confirm'];
-        } else {
-            $data['error_confirm'] = '';
-        }
-
+    public function customer_group() {
         $data['customer_groups'] = array();
 
         if (is_array($this->config->get('config_customer_group_display'))) {
@@ -82,100 +112,10 @@ class ControllerRestApiAccountRegister extends Controller {
                     $data['customer_groups'][] = $customer_group;
                 }
             }
-        }
 
-        if (isset($this->request->post['customer_group_id'])) {
-            $data['customer_group_id'] = $this->request->post['customer_group_id'];
+            $data['status'] = TRUE;
         } else {
-            $data['customer_group_id'] = $this->config->get('config_customer_group_id');
-        }
-
-        if (isset($this->request->post['firstname'])) {
-            $data['firstname'] = $this->request->post['firstname'];
-        } else {
-            $data['firstname'] = '';
-        }
-
-        if (isset($this->request->post['lastname'])) {
-            $data['lastname'] = $this->request->post['lastname'];
-        } else {
-            $data['lastname'] = '';
-        }
-
-        if (isset($this->request->post['email'])) {
-            $data['email'] = $this->request->post['email'];
-        } else {
-            $data['email'] = '';
-        }
-
-        if (isset($this->request->post['telephone'])) {
-            $data['telephone'] = $this->request->post['telephone'];
-        } else {
-            $data['telephone'] = '';
-        }
-
-        // Custom Fields
-        $data['custom_fields'] = array();
-
-        $this->load->model('account/custom_field');
-
-        $custom_fields = $this->model_account_custom_field->getCustomFields();
-
-        foreach ($custom_fields as $custom_field) {
-            if ($custom_field['location'] == 'account') {
-                $data['custom_fields'][] = $custom_field;
-            }
-        }
-
-        if (isset($this->request->post['custom_field']['account'])) {
-            $data['register_custom_field'] = $this->request->post['custom_field']['account'];
-        } else {
-            $data['register_custom_field'] = array();
-        }
-
-        if (isset($this->request->post['password'])) {
-            $data['password'] = $this->request->post['password'];
-        } else {
-            $data['password'] = '';
-        }
-
-        if (isset($this->request->post['confirm'])) {
-            $data['confirm'] = $this->request->post['confirm'];
-        } else {
-            $data['confirm'] = '';
-        }
-
-        if (isset($this->request->post['newsletter'])) {
-            $data['newsletter'] = $this->request->post['newsletter'];
-        } else {
-            $data['newsletter'] = '';
-        }
-
-        // Captcha
-        if ($this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('register', (array) $this->config->get('config_captcha_page'))) {
-            $data['captcha'] = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha'), $this->error);
-        } else {
-            $data['captcha'] = '';
-        }
-
-        if ($this->config->get('config_account_id')) {
-            $this->load->model('catalog/information');
-
-            $information_info = $this->model_catalog_information->getInformation($this->config->get('config_account_id'));
-
-            if ($information_info) {
-                $data['text_agree'] = sprintf($this->language->get('text_agree'), $this->url->api_link('information/information/agree', 'information_id=' . $this->config->get('config_account_id'), true), $information_info['title'], $information_info['title']);
-            } else {
-                $data['text_agree'] = '';
-            }
-        } else {
-            $data['text_agree'] = '';
-        }
-
-        if (isset($this->request->post['agree'])) {
-            $data['agree'] = $this->request->post['agree'];
-        } else {
-            $data['agree'] = false;
+            $data['status'] = FALSE;
         }
 
         $this->response->addHeader('Content-Type: application/json');

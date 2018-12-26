@@ -5,8 +5,8 @@ class ControllerRestApiAccountAddress extends Controller {
     private $error = array();
 
     public function index() {
-        if (!$this->customer->isLogged()) {
-            $this->loginError();
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
         }
 
         $this->load->language('account/address');
@@ -17,8 +17,8 @@ class ControllerRestApiAccountAddress extends Controller {
     }
 
     public function add() {
-        if (!$this->customer->isLogged()) {
-            $this->loginError();
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
         }
         $this->load->language('account/address');
 
@@ -27,8 +27,10 @@ class ControllerRestApiAccountAddress extends Controller {
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
             $this->model_account_address->addAddress($this->customer->getId(), $this->request->post);
 
+            $data['status'] = TRUE;
             $data['success'] = $this->language->get('text_add');
         } else {
+            $data['status'] = FALSE;
             if (isset($this->error['firstname'])) {
                 $data['error_firstname'] = $this->error['firstname'];
             } else {
@@ -83,8 +85,8 @@ class ControllerRestApiAccountAddress extends Controller {
     }
 
     public function edit() {
-        if (!$this->customer->isLogged()) {
-            $this->loginError();
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
         }
 
         $this->load->language('account/address');
@@ -109,9 +111,10 @@ class ControllerRestApiAccountAddress extends Controller {
                 unset($this->session->data['payment_method']);
                 unset($this->session->data['payment_methods']);
             }
-
+            $data['status'] = TRUE;
             $data['success'] = $this->language->get('text_edit');
         } else {
+            $data['status'] = FALSE;
             if (isset($this->error['firstname'])) {
                 $data['error_firstname'] = $this->error['firstname'];
             } else {
@@ -166,8 +169,8 @@ class ControllerRestApiAccountAddress extends Controller {
     }
 
     public function delete() {
-        if (!$this->customer->isLogged()) {
-            $this->loginError();
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
         }
 
         $this->load->language('account/address');
@@ -191,8 +194,10 @@ class ControllerRestApiAccountAddress extends Controller {
                 unset($this->session->data['payment_methods']);
             }
 
+            $data['status'] = TRUE;
             $data['success'] = $this->language->get('text_delete');
         } else {
+            $data['status'] = FALSE;
             if (isset($this->error['warning'])) {
                 $data['error_warning'] = $this->error['warning'];
             } else {
@@ -205,62 +210,53 @@ class ControllerRestApiAccountAddress extends Controller {
     }
 
     protected function getList() {
-
-        if (isset($this->error['warning'])) {
-            $data['error_warning'] = $this->error['warning'];
-        } else {
-            $data['error_warning'] = '';
-        }
-
-        if (isset($this->session->data['success'])) {
-            $data['success'] = $this->session->data['success'];
-
-            unset($this->session->data['success']);
-        } else {
-            $data['success'] = '';
-        }
-
         $data['addresses'] = array();
 
         $results = $this->model_account_address->getAddresses();
+        if ($results) {
+            $data['status'] = TRUE;
+            foreach ($results as $result) {
 
-        foreach ($results as $result) {
-            if ($result['address_format']) {
-                $format = $result['address_format'];
-            } else {
-                $format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+                if ($result['address_format']) {
+                    $format = $result['address_format'];
+                } else {
+                    $format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+                }
+
+                $find = array(
+                    '{firstname}',
+                    '{lastname}',
+                    '{company}',
+                    '{address_1}',
+                    '{address_2}',
+                    '{city}',
+                    '{postcode}',
+                    '{zone}',
+                    '{zone_code}',
+                    '{country}'
+                );
+
+                $replace = array(
+                    'firstname' => $result['firstname'],
+                    'lastname' => $result['lastname'],
+                    'company' => $result['company'],
+                    'address_1' => $result['address_1'],
+                    'address_2' => $result['address_2'],
+                    'city' => $result['city'],
+                    'postcode' => $result['postcode'],
+                    'zone' => $result['zone'],
+                    'zone_code' => $result['zone_code'],
+                    'country' => $result['country']
+                );
+
+
+                $data['addresses'][] = array(
+                    'address_id' => $result['address_id'],
+                    'address' => str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format)))),
+                );
             }
-
-            $find = array(
-                '{firstname}',
-                '{lastname}',
-                '{company}',
-                '{address_1}',
-                '{address_2}',
-                '{city}',
-                '{postcode}',
-                '{zone}',
-                '{zone_code}',
-                '{country}'
-            );
-
-            $replace = array(
-                'firstname' => $result['firstname'],
-                'lastname' => $result['lastname'],
-                'company' => $result['company'],
-                'address_1' => $result['address_1'],
-                'address_2' => $result['address_2'],
-                'city' => $result['city'],
-                'postcode' => $result['postcode'],
-                'zone' => $result['zone'],
-                'zone_code' => $result['zone_code'],
-                'country' => $result['country']
-            );
-
-            $data['addresses'][] = array(
-                'address_id' => $result['address_id'],
-                'address' => str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format)))),
-            );
+        } else {
+            $data['status'] = FALSE;
         }
 
         $this->response->addHeader('Content-Type: application/json');
@@ -268,109 +264,124 @@ class ControllerRestApiAccountAddress extends Controller {
     }
 
     public function getDetail() {
+        $json = array();
+        $data = array();
         $this->load->language('account/address');
 
         $this->load->model('account/address');
+        if (isset($this->request->post['customer_id'])) {
+            $this->customer->setId($this->request->post['customer_id']);
+        }
 
         $address_info = $this->model_account_address->getAddress($this->request->get['address_id']);
 
-        if (!empty($address_info)) {
-            $data['firstname'] = $address_info['firstname'];
-        } else {
-            $data['firstname'] = '';
-        }
-
-        if (!empty($address_info)) {
-            $data['lastname'] = $address_info['lastname'];
-        } else {
-            $data['lastname'] = '';
-        }
-
-        if (!empty($address_info)) {
-            $data['company'] = $address_info['company'];
-        } else {
-            $data['company'] = '';
-        }
-
-        if (!empty($address_info)) {
-            $data['address_1'] = $address_info['address_1'];
-        } else {
-            $data['address_1'] = '';
-        }
-
-        if (!empty($address_info)) {
-            $data['address_2'] = $address_info['address_2'];
-        } else {
-            $data['address_2'] = '';
-        }
-
-        if (!empty($address_info)) {
-            $data['postcode'] = $address_info['postcode'];
-        } else {
-            $data['postcode'] = '';
-        }
-
-        if (!empty($address_info)) {
-            $data['city'] = $address_info['city'];
-        } else {
-            $data['city'] = '';
-        }
-
-        if (!empty($address_info)) {
-            $data['country_id'] = $address_info['country_id'];
-        } else {
-            $data['country_id'] = $this->config->get('config_country_id');
-        }
-
-        if (!empty($address_info)) {
-            $data['country'] = $address_info['country'];
-        } else {
-            $data['country'] = '';
-        }
-
-        if (!empty($address_info)) {
-            $data['zone_id'] = $address_info['zone_id'];
-        } else {
-            $data['zone_id'] = '';
-        }
-
-        if (!empty($address_info)) {
-            $data['zone'] = $address_info['zone'];
-        } else {
-            $data['zone'] = '';
-        }
-
-        // Custom fields
-        $data['custom_fields'] = array();
-
-        $this->load->model('account/custom_field');
-
-        $custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
-
-        foreach ($custom_fields as $custom_field) {
-            if ($custom_field['location'] == 'address') {
-                $data['custom_fields'][] = $custom_field;
+        if ($address_info) {
+            if (!empty($address_info)) {
+                $data['firstname'] = $address_info['firstname'];
+            } else {
+                $data['firstname'] = '';
             }
+
+            if (!empty($address_info)) {
+                $data['lastname'] = $address_info['lastname'];
+            } else {
+                $data['lastname'] = '';
+            }
+
+            if (!empty($address_info)) {
+                $data['company'] = $address_info['company'];
+            } else {
+                $data['company'] = '';
+            }
+
+            if (!empty($address_info)) {
+                $data['address_1'] = $address_info['address_1'];
+            } else {
+                $data['address_1'] = '';
+            }
+
+            if (!empty($address_info)) {
+                $data['address_2'] = $address_info['address_2'];
+            } else {
+                $data['address_2'] = '';
+            }
+
+            if (!empty($address_info)) {
+                $data['postcode'] = $address_info['postcode'];
+            } else {
+                $data['postcode'] = '';
+            }
+
+            if (!empty($address_info)) {
+                $data['city'] = $address_info['city'];
+            } else {
+                $data['city'] = '';
+            }
+
+            if (!empty($address_info)) {
+                $data['country_id'] = $address_info['country_id'];
+            } else {
+                $data['country_id'] = $this->config->get('config_country_id');
+            }
+
+            if (!empty($address_info)) {
+                $data['country'] = $address_info['country'];
+            } else {
+                $data['country'] = '';
+            }
+
+            if (!empty($address_info)) {
+                $data['zone_id'] = $address_info['zone_id'];
+            } else {
+                $data['zone_id'] = '';
+            }
+
+            if (!empty($address_info)) {
+                $data['zone'] = $address_info['zone'];
+            } else {
+                $data['zone'] = '';
+            }
+
+            // Custom fields
+            $data['custom_fields'] = array();
+
+            $this->load->model('account/custom_field');
+
+            $custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
+
+            foreach ($custom_fields as $custom_field) {
+                if ($custom_field['location'] == 'address') {
+                    $data['custom_fields'][] = $custom_field;
+                }
+            }
+
+            if (isset($this->request->post['custom_field']['address'])) {
+                $data['address_custom_field'] = $this->request->post['custom_field']['address'];
+            } elseif (isset($address_info)) {
+                $data['address_custom_field'] = $address_info['custom_field'];
+            } else {
+                $data['address_custom_field'] = array();
+            }
+
+            if (isset($this->request->post['default'])) {
+                $data['default'] = $this->request->post['default'];
+            } elseif (isset($this->request->get['address_id'])) {
+                $data['default'] = $this->customer->getAddressId() == $this->request->get['address_id'];
+            } else {
+                $data['default'] = false;
+            }
+
+            $json['data'] = $data;
+            $json['status'] = TRUE;
+        } else {
+            $json['data'] = $data;
+            $json['status'] = FALSE;
         }
 
-        if (isset($this->request->post['custom_field']['address'])) {
-            $data['address_custom_field'] = $this->request->post['custom_field']['address'];
-        } elseif (isset($address_info)) {
-            $data['address_custom_field'] = $address_info['custom_field'];
-        } else {
-            $data['address_custom_field'] = array();
-        }
 
-        if (isset($this->request->post['default'])) {
-            $data['default'] = $this->request->post['default'];
-        } elseif (isset($this->request->get['address_id'])) {
-            $data['default'] = $this->customer->getAddressId() == $this->request->get['address_id'];
-        } else {
-            $data['default'] = false;
-        }
 
         $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode($data));
+        $this->response->setOutput(json_encode($json));
     }
 
     protected function validateForm() {
@@ -436,23 +447,25 @@ class ControllerRestApiAccountAddress extends Controller {
         return !$this->error;
     }
 
-    public function loginError() {
-        $data['error_warning'] = 'Please login';
-        $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode($data));
-    }
-
     public function countries() {
         $this->load->model('localisation/country');
+        $data['countries'] = array();
+        $countries = $this->model_localisation_country->getCountries();
 
-        $data['countries'] = $this->model_localisation_country->getCountries();
+        if ($countries) {
+            $data['status'] = TRUE;
+            $data['countries'] = $countries;
+        } else {
+            $data['status'] = FALSE;
+        }
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($data));
     }
-    
+
     public function zones() {
-        $json = array();
+        $data = array();
+        $data['data'] = array();
 
         $this->load->model('localisation/country');
 
@@ -461,7 +474,7 @@ class ControllerRestApiAccountAddress extends Controller {
         if ($country_info) {
             $this->load->model('localisation/zone');
 
-            $json = array(
+            $data['data'] = array(
                 'country_id' => $country_info['country_id'],
                 'name' => $country_info['name'],
                 'iso_code_2' => $country_info['iso_code_2'],
@@ -471,10 +484,13 @@ class ControllerRestApiAccountAddress extends Controller {
                 'zone' => $this->model_localisation_zone->getZonesByCountryId($this->request->get['country_id']),
                 'status' => $country_info['status']
             );
+            $data['status'] = TRUE;
+        } else {
+            $data['status'] = FALSE;
         }
 
         $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode($json));
+        $this->response->setOutput(json_encode($data));
     }
 
 }

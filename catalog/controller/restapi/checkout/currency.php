@@ -13,15 +13,20 @@ class ControllerRestApiCheckoutCurrency extends Controller {
 
         $results = $this->model_localisation_currency->getCurrencies();
 
-        foreach ($results as $result) {
-            if ($result['status']) {
-                $json['currencies'][] = array(
-                    'title' => $result['title'],
-                    'code' => $result['code'],
-                    'symbol_left' => $result['symbol_left'],
-                    'symbol_right' => $result['symbol_right']
-                );
+        if ($results) {
+            foreach ($results as $result) {
+                if ($result['status']) {
+                    $json['currencies'][] = array(
+                        'title' => $result['title'],
+                        'code' => $result['code'],
+                        'symbol_left' => $result['symbol_left'],
+                        'symbol_right' => $result['symbol_right']
+                    );
+                }
             }
+            $json['status'] = TRUE;
+        } else {
+            $json['status'] = FALSE;
         }
 
 
@@ -45,8 +50,10 @@ class ControllerRestApiCheckoutCurrency extends Controller {
             unset($this->session->data['shipping_methods']);
 
             $json['success'] = $this->language->get('text_success');
+            $json['status'] = TRUE;
         } else {
             $json['error'] = $this->language->get('error_currency');
+            $json['status'] = FALSE;
         }
 
 
