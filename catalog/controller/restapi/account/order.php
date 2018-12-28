@@ -208,6 +208,7 @@ class ControllerRestApiAccountOrder extends Controller {
                 }
 
                 $data['products'][] = array(
+                    'product_id' => $product['product_id'],
                     'name' => $product['name'],
                     'model' => $product['model'],
                     'option' => $option_data,
