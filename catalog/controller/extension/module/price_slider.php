@@ -15,6 +15,9 @@ class ControllerExtensionModulePriceSlider extends Controller {
 
     public function index() {
         $this->load->language('extension/module/price_slider');
+        $this->load->model('catalog/category');
+        $this->load->model('catalog/product');
+        
         $data['heading_title'] = $this->language->get('heading_title');
         $data['button_filter'] = $this->language->get('button_filter');
         $this->document->addScript('catalog/view/javascript/bootstrap-slider.js');
@@ -131,53 +134,54 @@ class ControllerExtensionModulePriceSlider extends Controller {
         $url = '';
 
         if (isset($this->request->get['filter'])) {
-                $url .= '&filter=' . $this->request->get['filter'];
-            }
+            $url .= '&filter=' . $this->request->get['filter'];
+        }
 
-            if (isset($this->request->get['search'])) {
-                $url .= '&search=' . $this->request->get['search'];
-            }
+        if (isset($this->request->get['search'])) {
+            $url .= '&search=' . $this->request->get['search'];
+        }
 
-            if (isset($this->request->get['brand_filter'])) {
-                $url .= '&brand_filter=' . $this->request->get['brand_filter'];
-            }
+        if (isset($this->request->get['brand_filter'])) {
+            $url .= '&brand_filter=' . $this->request->get['brand_filter'];
+        }
 
-            if (isset($this->request->get['country_origin_filter'])) {
-                $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
-            }
-            
-            if (isset($this->request->get['category_filter'])) {
-                $url .= '&category_filter=' . $this->request->get['category_filter'];
-            }
+        if (isset($this->request->get['country_origin_filter'])) {
+            $url .= '&country_origin_filter=' . $this->request->get['country_origin_filter'];
+        }
 
-            if (isset($this->request->get['manufacturer'])) {
-                $url .= '&manufacturer=' . $this->request->get['manufacturer'];
-            }
+        if (isset($this->request->get['category_filter'])) {
+            $url .= '&category_filter=' . $this->request->get['category_filter'];
+        }
 
-            if (isset($this->request->get['sort'])) {
-                $url .= '&sort=' . $this->request->get['sort'];
-            }
+        if (isset($this->request->get['manufacturer'])) {
+            $url .= '&manufacturer=' . $this->request->get['manufacturer'];
+        }
 
-            if (isset($this->request->get['order'])) {
-                $url .= '&order=' . $this->request->get['order'];
-            }
+        if (isset($this->request->get['sort'])) {
+            $url .= '&sort=' . $this->request->get['sort'];
+        }
 
-            if (isset($this->request->get['limit'])) {
-                $url .= '&limit=' . $this->request->get['limit'];
-            }
+        if (isset($this->request->get['order'])) {
+            $url .= '&order=' . $this->request->get['order'];
+        }
+
+        if (isset($this->request->get['limit'])) {
+            $url .= '&limit=' . $this->request->get['limit'];
+        }
 
         if (!$min_max) {
             $range = explode('-', '0-0');
         } else {
             $range = explode('-', $min_max);
         }
+        
         $data['min_max'] = $min_max;
         $data['price_range_min'] = $this->currency->format($range[0], $pcode, '', false);
         $data['price_range_max'] = $this->currency->format($range[1], $pcode, '', false);
 
         $data['price_min'] = $this->currency->format($range[0], $pcode);
         $data['price_max'] = $this->currency->format($range[1], $pcode);
-        
+
         $action = '';
         $actionUrl = '';
 

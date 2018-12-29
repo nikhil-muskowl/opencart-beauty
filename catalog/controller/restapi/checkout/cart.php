@@ -37,6 +37,8 @@ class ControllerRestApiCheckoutCart extends Controller {
             $this->load->model('tool/image');
             $this->load->model('tool/upload');
 
+            $data['total_quantity'] = $this->cart->countProducts();
+            
             $data['products'] = array();
 
             $products = $this->cart->getProducts();
@@ -188,6 +190,7 @@ class ControllerRestApiCheckoutCart extends Controller {
                 array_multisort($sort_order, SORT_ASC, $totals);
             }
 
+            
             $data['totals'] = array();
 
             foreach ($totals as $total) {
@@ -352,10 +355,10 @@ class ControllerRestApiCheckoutCart extends Controller {
             unset($this->session->data['payment_method']);
             unset($this->session->data['payment_methods']);
             unset($this->session->data['reward']);
-            
-             $json['status'] = TRUE;
-        }else{
-             $json['status'] = FALSE;
+
+            $json['status'] = TRUE;
+        } else {
+            $json['status'] = FALSE;
         }
 
         $this->response->addHeader('Content-Type: application/json');
@@ -428,10 +431,10 @@ class ControllerRestApiCheckoutCart extends Controller {
             }
 
             $json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
-            
-             $json['status'] = TRUE;
-        }else{
-             $json['status'] = FALSE;
+
+            $json['status'] = TRUE;
+        } else {
+            $json['status'] = FALSE;
         }
 
         $this->response->addHeader('Content-Type: application/json');

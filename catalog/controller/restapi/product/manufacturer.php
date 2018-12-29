@@ -9,7 +9,7 @@ class ControllerRestApiProductManufacturer extends Controller {
 
         $this->load->model('tool/image');
 
-        $data['categories'] = array();
+        $data['manufacturers'] = array();
 
         $results = $this->model_catalog_manufacturer->getManufacturers();
 
@@ -23,11 +23,11 @@ class ControllerRestApiProductManufacturer extends Controller {
                     $key = utf8_substr(utf8_strtoupper($result['name']), 0, 1);
                 }
 
-                if (!isset($data['categories'][$key])) {
-                    $data['categories'][$key]['name'] = $key;
-                }
+//                if (!isset($data['categories'][$key])) {
+//                    $data['categories'][$key]['name'] = $key;
+//                }
 
-                $data['categories'][$key]['manufacturer'][] = array(
+                $data['manufacturers'][] = array(
                     'manufacturer_id' => $result['manufacturer_id'],
                     'name' => $result['name'],
                 );
@@ -421,7 +421,7 @@ class ControllerRestApiProductManufacturer extends Controller {
             $data['limit'] = $limit;
 
             $data['status'] = TRUE;
-        } else {           
+        } else {
             $data['heading_title'] = $this->language->get('text_error');
 
             $data['text_error'] = $this->language->get('text_error');
